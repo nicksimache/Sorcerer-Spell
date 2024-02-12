@@ -8,8 +8,11 @@
 #include <conio.h>
 #include <fstream>
 #include <cctype>
+#include <vector>
 
 #include "Animation.h"
+#include "Board.h"
+#include "LetterTile.h"
 
 int main()
 {
@@ -48,9 +51,17 @@ int main()
 	player.setOrigin(sf::Vector2f(50.0f, 50.0f)); //origin of the object
 	player2.setOrigin(sf::Vector2f(50.0f, 50.0f)); //origin of the object
 
-	player.setPosition(960, 300);
-	player2.setPosition(960, 300);
-
+	if (connectionType == 'c') // client character spawns on right
+	{
+		player.setPosition(1760, 540);
+		player2.setPosition(220, 540);
+	}
+	else //server character spawns on left
+	{
+		player.setPosition(220, 540);
+		player2.setPosition(1760, 540);
+	}
+	
 	sf::Texture playerTexture;
 	sf::Texture player2Texture;
 	playerTexture.loadFromFile("sprites/RedSheet.png");
@@ -79,6 +90,18 @@ int main()
 
 	int map[100][100];
 	sf::Vector2i loadCounter = sf::Vector2i(0, 0);
+
+	// Letter Array
+
+	Board B(7, 7);
+	std::vector<std::vector<sf::RectangleShape>> letterArray(B.xDim, std::vector<sf::RectangleShape>(B.yDim, sf::RectangleShape()));
+	for (int i = 0; i < B.xDim; i++)
+	{
+		for (int j = 0; j < B.yDim; j++)
+		{
+			letterArray[i][j] = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+		}
+	}
 
 	if (openfile.is_open())
 	{
@@ -131,7 +154,7 @@ int main()
 		sf::Event evnt;
 		while (window.pollEvent(evnt))
 		{
-			if (evnt.type == sf::Event::Closed)
+			if (evnt.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
 			{
 				window.close();
 			}
@@ -216,21 +239,44 @@ int main()
 
 		}
 
-		if (player.getPosition().x < 352)
+		if (connectionType == 'c') //player on right
 		{
-			player.setPosition(352, player.getPosition().y);
+			if (player.getPosition().x > 1796)
+			{
+				player.setPosition(1796, player.getPosition().y);
+			}
+			if (player.getPosition().x < 1740)
+			{
+				player.setPosition(1740, player.getPosition().y);
+			}
+			if (player.getPosition().y < 235)
+			{
+				player.setPosition(player.getPosition().x, 235);
+			}
+			if (player.getPosition().y > 900)
+			{
+				player.setPosition(player.getPosition().x, 900);
+			}
+		
 		}
-		if (player.getPosition().x > 1600)
+		else //player on left
 		{
-			player.setPosition(1600, player.getPosition().y);
-		}
-		if (player.getPosition().y < 96)
-		{
-			player.setPosition(player.getPosition().x, 96);
-		}
-		if (player.getPosition().y > 512)
-		{
-			player.setPosition(player.getPosition().x, 512);
+			if (player.getPosition().x < 166)
+			{
+				player.setPosition(166, player.getPosition().y);
+			}
+			if (player.getPosition().x > 230)
+			{
+				player.setPosition(230, player.getPosition().y);
+			}
+			if (player.getPosition().y < 235)
+			{
+				player.setPosition(player.getPosition().x, 235);
+			}
+			if (player.getPosition().y > 900)
+			{
+				player.setPosition(player.getPosition().x, 900);
+			}
 		}
 
 		sf::Packet packet;
@@ -295,6 +341,22 @@ int main()
 					brickTiles.setTexture(brickTexture);
 					window.draw(brickTiles);
 				}
+			}
+		}
+
+		for (int i = 0; i < B.xDim; i++)
+		{
+			for (int j = 0; j < B.yDim; j++)
+			{
+				sf::Texture letterTexture;
+				std::string str = "sprites/letters/";
+				str += B.getTile(i,j).letter;
+				str += ".png";
+
+				letterTexture.loadFromFile(str);
+				letterArray[i][j].setTexture(&letterTexture);
+				letterArray[i][j].setPosition((1920 - 350) / 2 + i * 50, (1080 - 350) / 2 + j * 50);
+				window.draw(letterArray[i][j]);
 			}
 		}
 
