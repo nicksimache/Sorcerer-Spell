@@ -24,6 +24,7 @@ public:
 
 	void generate();
 	LetterTile getTile(int i, int j);
+	bool isTileChosen(int i, int j);
 
 };
 #endif

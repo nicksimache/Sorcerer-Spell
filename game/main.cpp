@@ -99,9 +99,13 @@ int main()
 	{
 		for (int j = 0; j < B.yDim; j++)
 		{
-			letterArray[i][j] = sf::RectangleShape(sf::Vector2f(50.0f, 50.0f));
+			letterArray[i][j] = sf::RectangleShape(sf::Vector2f(100.0f, 100.0f));
 		}
 	}
+
+	std::string chosenWord;
+	std::vector<std::vector<bool>> chosenArr(B.xDim, std::vector<bool>(B.yDim, false));
+	//gameLoop
 
 	if (openfile.is_open())
 	{
@@ -176,15 +180,15 @@ int main()
 			{
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 				{
-					player.move(-0.0707f, -0.0707f);
+					player.move(-0.35f, -0.35f);
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 				{
-					player.move(-0.0707f, 0.0707f);
+					player.move(-0.35f, 0.35f);
 				}
 				else
 				{
-					player.move(-0.1f, 0.0f);
+					player.move(-0.5f, 0.0f);
 				}
 				animation.Update(1, deltaTime);
 
@@ -194,15 +198,15 @@ int main()
 			{
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 				{
-					player.move(0.0707f, -0.0707f);
+					player.move(0.35f, -0.35f);
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 				{
-					player.move(0.0707f, 0.0707f);
+					player.move(0.35f, 0.35f);
 				}
 				else
 				{
-					player.move(0.1f, 0.0f);
+					player.move(0.5f, 0.0f);
 				}
 				animation.Update(0, deltaTime);
 			}
@@ -210,7 +214,7 @@ int main()
 			{
 				if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 				{
-					player.move(0.0f, -0.1f);
+					player.move(0.0f, -0.5f);
 				}
 				if (animation.getCurrentImage().y == 0) //Sprite facing right
 				{
@@ -225,7 +229,7 @@ int main()
 			{
 				if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 				{
-					player.move(0.0f, 0.1f);
+					player.move(0.0f, 0.5f);
 				}
 				if (animation.getCurrentImage().y == 0) //Sprite facing right
 				{
@@ -343,14 +347,80 @@ int main()
 				}
 			}
 		}
+		
+		for (int i = 0; i < B.xDim; i++)
+		{
+			for (int j = 0; j < B.yDim; j++)
+			{
+				int letterX = (1920 - 760) / 2 + i * 110;
+				int letterY = (1080 - 760) / 2 + j * 110;
 
+				sf::Texture letterTexture;
+				std::string str = "sprites/letters/";
+				str += B.getTile(i, j).letter;
+				str += ".png";
+									
+				letterTexture.loadFromFile(str);
+				letterArray[i][j].setTexture(&letterTexture);
+				letterArray[i][j].setPosition(letterX, letterY);
+				window.draw(letterArray[i][j]);
+
+				if (chosenArr[i][j])
+				{
+					sf::Texture letterTexture;
+					std::string str = "sprites/letters/";
+					str += B.getTile(i, j).letter;
+					str += "selected.png";
+
+					letterTexture.loadFromFile(str);
+					letterArray[i][j].setTexture(&letterTexture);
+					letterArray[i][j].setPosition(letterX, letterY);
+					window.draw(letterArray[i][j]);
+				}
+
+
+				
+				// if you click on one of the letters
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (sf::Mouse::getPosition(window).x >= letterX && sf::Mouse::getPosition(window).x <= letterX + 100) && (sf::Mouse::getPosition(window).y >= letterY && sf::Mouse::getPosition(window).y <= letterY + 100))
+				{
+					if (!chosenArr[i][j]) {
+						chosenWord += B.getTile(i, j).letter;
+						//std::cout << B.getTile(i, j).isLetterChosen << "\n";
+						chosenArr[i][j] = true;
+						//std::cout << B.getTile(i, j).isLetterChosen << "\n\n\n";
+
+					}
+					
+
+				}
+				if(!(sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+				{
+					for (int i = 0; i < B.xDim; i++)
+					{
+						for (int j = 0; j < B.yDim; j++)
+						{
+							if (chosenArr[i][j])
+							{
+								chosenArr[i][j] = false;
+							}
+						}
+					}
+					chosenWord = "";
+
+				}
+
+				
+			}
+		}
+		
+		/*
 		for (int i = 0; i < B.xDim; i++)
 		{
 			for (int j = 0; j < B.yDim; j++)
 			{
 				sf::Texture letterTexture;
 				std::string str = "sprites/letters/";
-				str += B.getTile(i,j).letter;
+				str += B.getTile(i, j).letter;
 				str += ".png";
 
 				letterTexture.loadFromFile(str);
@@ -359,8 +429,9 @@ int main()
 				window.draw(letterArray[i][j]);
 			}
 		}
+		*/
 
-
+		
 		player.setTextureRect(animation.uvRect);
 		player2.setTextureRect(animation2.uvRect);
 

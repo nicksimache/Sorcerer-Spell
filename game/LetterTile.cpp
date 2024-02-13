@@ -16,11 +16,22 @@ std::map<std::string, int> LetterTile::letterScores = {
     {"Q", 10}, {"Z", 10}
 };
 
-LetterTile::LetterTile() : letter("A"), point(0) {}
-LetterTile::LetterTile(std::string s) : letter(s), point(letterScores[s]) {}
+LetterTile::LetterTile() : letter("A"), point(0), isLetterChosen(false) {}
+LetterTile::LetterTile(std::string s) : letter(s), point(letterScores[s]), isLetterChosen(false) {}
 
 std::string LetterTile::toString() {
     return letter;
+
+}
+
+void LetterTile::changeLetterChosen(bool b)
+{
+    std::cout << isLetterChosen << "\n";
+
+    isLetterChosen = b;
+
+    std::cout << isLetterChosen << "\n\n\n";
+
 
 }
 

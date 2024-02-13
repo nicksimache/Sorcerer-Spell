@@ -68,6 +68,10 @@ LetterTile Board::getTile(int i, int j)
 	return B[i][j];
 }
 
+bool Board::isTileChosen(int i, int j)
+{
+	return B[i][j].isLetterChosen;
+}
 
 
 

@@ -10,6 +10,7 @@ class LetterTile {
 public:
 	std::string letter;
 	int point;
+	bool isLetterChosen;
 
 
 	static std::map<std::string, int> letterScores;
@@ -19,6 +20,7 @@ public:
 	LetterTile(std::string s);
 
 	std::string toString();
+	void changeLetterChosen(bool b);
 
 
 };
