@@ -28,7 +28,7 @@ int main()
 
 	int gameStage = 0;
 
-	sf::IpAddress ip = sf::IpAddress::getLocalAddress(); // maybe need to change later
+	sf::IpAddress ip = sf::IpAddress::getPublicAddress(); // maybe need to change later
 	sf::TcpSocket socket;
 	char connectionType;
 
@@ -39,6 +39,7 @@ int main()
 
 	if (connectionType == 's')
 	{
+		std::cout << ip;
 		sf::TcpListener listener;
 		listener.listen(2000); //port
 		listener.accept(socket);
@@ -47,6 +48,7 @@ int main()
 	}
 	else
 	{
+		std::cin >> ip;
 		socket.connect(ip, 2000);
 
 		gameStage = 2;
@@ -434,9 +436,7 @@ int main()
 						if (!chosenArr[i][j]) {
 							chosenWord += B.getTile(i, j).letter;
 							currentWordPoints += B.getTile(i, j).point;
-							//std::cout << B.getTile(i, j).isLetterChosen << "\n";
 							chosenArr[i][j] = true;
-							//std::cout << B.getTile(i, j).isLetterChosen << "\n\n\n";
 
 						}
 
@@ -444,24 +444,17 @@ int main()
 					}
 					if (!(sf::Mouse::isButtonPressed(sf::Mouse::Left)))
 					{
-						for (int p = 0; p < B.xDim; p++)
-						{
-							for (int q = 0; q < B.yDim; q++)
-							{
-								if (chosenArr[p][q])
-								{
-									chosenArr[p][q] = false;
-								}
-							}
-						}
+						//checks if the selected word is valid
 						bool isEnglishWord = false;
 						for (int p = 0; p < dictionary.size(); p++)
 						{
-							if (chosenWord.compare(dictionary[i]))
+							if (chosenWord.compare(dictionary[p]))
 							{
 								isEnglishWord = true;
 							}
 						}
+
+						// if its valid, change turn, add points etc.
 						if (isEnglishWord)
 						{
 							ammo += currentWordPoints;
@@ -478,9 +471,23 @@ int main()
 						chosenWord = "";
 						currentWordPoints = 0;
 
+						//if mouse released deselects everything
+						for (int p = 0; p < B.xDim; p++)
+						{
+							for (int q = 0; q < B.yDim; q++)
+							{
+								if (chosenArr[p][q])
+								{
+									chosenArr[p][q] = false;
+								}
+							}
+						}
+
 					}
 
+					//if its your turn, send the selected word along with the coordinates that are selected
 					boardPacket << chosenWord;
+
 					for (int p = 0; p < B.xDim; p++)
 					{
 						for (int q = 0; q < B.yDim; q++)
