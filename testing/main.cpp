@@ -105,6 +105,8 @@ int main()
 
 	// Letter Array
 
+	bool isEnglishWord = false;
+
 	std::vector<std::vector<sf::RectangleShape>> letterArray(B.xDim, std::vector<sf::RectangleShape>(B.yDim, sf::RectangleShape()));
 	for (int i = 0; i < B.xDim; i++)
 	{
@@ -444,19 +446,12 @@ int main()
 					}
 					if (!(sf::Mouse::isButtonPressed(sf::Mouse::Left)))
 					{
-						//checks if the selected word is valid
-						bool isEnglishWord = false;
-						for (int p = 0; p < dictionary.size(); p++)
-						{
-							if (chosenWord.compare(dictionary[p]))
-							{
-								isEnglishWord = true;
-							}
-						}
+						
 
 						// if its valid, change turn, add points etc.
 						if (isEnglishWord)
 						{
+							isEnglishWord = false;
 							ammo += currentWordPoints;
 							std::cout << ammo;
 							gameStage++;
@@ -531,6 +526,16 @@ int main()
 				
 			}//board refresh
 		}//board refresh
+
+		//checks if the selected word is valid
+
+		for (int p = 0; p < dictionary.size(); p++)
+		{
+			if (chosenWord.compare(dictionary[p]))
+			{
+				isEnglishWord = true;
+			}
+		}
 		
 		/*
 		for (int i = 0; i < B.xDim; i++)
