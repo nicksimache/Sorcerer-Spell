@@ -9,6 +9,7 @@
 #include <fstream>
 #include <cctype>
 #include <vector>
+#include <algorithm>
 
 #include "Animation.h"
 #include "Board.h"
@@ -117,7 +118,7 @@ int main()
 		}
 	}
 
-	std::string chosenWord;
+	std::string chosenWord = "";
 	std::vector<std::vector<bool>> chosenArr(B.xDim, std::vector<bool>(B.yDim, false));
 	//gameLoop
 
@@ -420,10 +421,14 @@ int main()
 					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (sf::Mouse::getPosition(window).x >= letterX && sf::Mouse::getPosition(window).x <= letterX + 100) && (sf::Mouse::getPosition(window).y >= letterY && sf::Mouse::getPosition(window).y <= letterY + 100))
 					{
 
+						std::cout << "click";
+
 						if (!chosenArr[i][j]) {
 							chosenWord += B.getTile(i, j).letter;
+							std::cout << chosenWord << std::endl;
 							currentWordPoints += B.getTile(i, j).point;
 							chosenArr[i][j] = true;
+							std::cout << " " << i << " " << j << std::endl;
 
 						}
 
@@ -437,13 +442,17 @@ int main()
 						{
 							isEnglishWord = false;
 							ammo += currentWordPoints;
-							std::cout << ammo;
+							std::cout << "eish";
 							gameStage++;
 							if (gameStage == 3)
 							{
 								gameStage == 1;
 							}
 							updateStage = 1;
+							packet << updateStage;
+						}
+						else {
+							updateStage = 0;
 							packet << updateStage;
 						}
 						
@@ -524,16 +533,22 @@ int main()
 			}//board refresh
 		}//board refresh
 
-		//checks if the selected word is valid
+		std::transform(chosenWord.begin(), chosenWord.end(), chosenWord.begin(),
+			[](unsigned char c) { return std::tolower(c); });
 
-		for (int p = 0; p < dictionary.size(); p++)
-		{
-			if (chosenWord.compare(dictionary[p]))
+		//checks if the selected word is valid
+		if (chosenWord.compare("") != 0) {
+			for (int p = 0; p < dictionary.size(); p++)
 			{
-				isEnglishWord = true;
+				if (chosenWord.compare(dictionary[p]) == 0)
+				{
+					std::cout << "test";
+					isEnglishWord = true;
+				}
 			}
 		}
 		
+
 		/*
 		for (int i = 0; i < B.xDim; i++)
 		{
