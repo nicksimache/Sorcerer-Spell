@@ -1,6 +1,3 @@
-a
-aa
-aaa
 aachen
 aardvark
 aardvarks
@@ -3529,10 +3526,10 @@ applicator
 applicators
 applied
 applies
-appliquƒ
-appliquƒd
-appliquƒing
-appliquƒs
+appliqu 
+appliqu d
+appliqu ing
+appliqu s
 apply
 applying
 appoint
@@ -4583,7 +4580,7 @@ attach
 attachable
 attached
 attaches
-attachƒ
+attach 
 attaching
 attachment
 attachments
@@ -5104,9 +5101,6 @@ aztec
 azure
 azurite
 azurites
-b
-ba
-baa
 baba
 babas
 babble
@@ -6994,8 +6988,8 @@ beyond
 bezel
 bezels
 bezique
-bƒarnaise
-bƒchamel
+b arnaise
+b chamel
 bhopal
 bhutan
 bi
@@ -7540,7 +7534,7 @@ blarney
 blarneyed
 blarneying
 blarneys
-blasƒ
+blas 
 blaspheme
 blasphemed
 blasphemer
@@ -9938,8 +9932,6 @@ byword
 bywords
 byzantine
 byzantium
-c
-ca
 cab
 cabal
 cabala
@@ -10378,8 +10370,8 @@ canals
 canap
 canape
 canapes
-canapƒ
-canapƒs
+canap 
+canap s
 canaps
 canard
 canards
@@ -13211,8 +13203,8 @@ clews
 clich
 cliche
 cliches
-clichƒ
-clichƒs
+clich 
+clich s
 clichs
 click
 clicked
@@ -13332,7 +13324,7 @@ clogging
 cloggy
 clogs
 cloisonn
-cloisonnƒ
+cloisonn 
 cloister
 cloistered
 cloistering
@@ -14349,8 +14341,8 @@ communions
 communiqu
 communique
 communiques
-communiquƒ
-communiquƒs
+communiqu 
+communiqu s
 communiqus
 communis
 communisation
@@ -15373,8 +15365,8 @@ consoling
 consols
 consomm
 consomme
-consommƒ
-consommƒs
+consomm 
+consomm s
 consomms
 consonance
 consonant
@@ -17133,8 +17125,8 @@ crewing
 crewman
 crewmen
 crews
-crche
-crches
+cr che
+cr ches
 cri
 crianlarich
 crib
@@ -17423,7 +17415,7 @@ crudely
 crudeness
 cruder
 crudest
-cruditƒs
+crudit s
 crudities
 crudits
 crudity
@@ -18032,7 +18024,6 @@ czechoslovakian
 czechoslovakians
 czechoslovaks
 czechs
-d
 dab
 dabbed
 dabbing
@@ -20595,11 +20586,11 @@ dextrose
 dextrous
 dextrously
 dextrousness
-dƒclassƒ
-dƒcolletage
-dƒcolletƒ
-dƒtente
-dƒtentes
+d class 
+d colletage
+d collet 
+d tente
+d tentes
 dfc
 dfm
 dhabi
@@ -23618,7 +23609,6 @@ dysphasia
 dysprosium
 dystrophic
 dystrophy
-e
 each
 eadem
 eager
@@ -27228,8 +27218,6 @@ eyrie
 eyries
 ezekiel
 ezra
-f
-fa
 faber
 faberge
 fabian
@@ -27331,7 +27319,7 @@ factum
 facultative
 faculties
 faculty
-faˆadism
+fa adism
 fad
 faddish
 faddy
@@ -27365,8 +27353,8 @@ fails
 failure
 failures
 fain
-fainƒant
-fainƒants
+fain ant
+fain ants
 faint
 fainted
 fainter
@@ -28182,8 +28170,8 @@ fiance
 fiancee
 fiancees
 fiances
-fiancƒ
-fiancƒs
+fianc 
+fianc s
 fiasco
 fiascoes
 fiascos
@@ -30783,7 +30771,6 @@ fuzziness
 fuzzy
 fy
 fylingdale
-g
 gab
 gabardine
 gabardines
@@ -33459,8 +33446,6 @@ gyrostabilisers
 gyrostabilizer
 gyrostabilizers
 gyves
-h
-ha
 haas
 habakkuk
 habeas
@@ -33496,8 +33481,8 @@ habituation
 habitude
 habitudes
 habitue
-habituƒ
-habituƒs
+habitu 
+habitu s
 hable
 hables
 habsburg
@@ -36476,7 +36461,6 @@ hysterotomies
 hysterotomy
 hythe
 hyundai
-i
 iain
 iamb
 iambic
@@ -39998,7 +39982,6 @@ ivy
 ivybridge
 ix
 izvestia
-j
 jab
 jabbed
 jabber
@@ -40575,7 +40558,6 @@ joyrides
 joys
 joystick
 joysticks
-jp
 jr
 juan
 juas
@@ -41503,8 +41485,6 @@ kymographs
 kyoto
 kyth
 kyushu
-l
-la
 lab
 label
 labeled
@@ -44025,8 +44005,6 @@ lysergic
 lysine
 lysol
 lytham
-m
-ma
 maastricht
 mabel
 mablethorpe
@@ -44103,7 +44081,7 @@ mackinaws
 mackintosh
 mackintoshes
 macmillan
-macramƒ
+macram 
 macro
 macrobiotic
 macrobiotics
@@ -44722,7 +44700,7 @@ manorbier
 manorial
 manors
 manpower
-manquƒ
+manqu 
 mans
 mansard
 mansards
@@ -46232,8 +46210,8 @@ mezzo
 mezzos
 mezzotint
 mezzotints
-mƒtier
-mƒtiers
+m tier
+m tiers
 mg
 mho
 mhos
@@ -47426,7 +47404,7 @@ moiled
 moiling
 moils
 moines
-moirƒ
+moir 
 moist
 moisten
 moistened
@@ -48679,7 +48657,6 @@ mythologists
 mythology
 mythomaniac
 myths
-n
 naafi
 nab
 nabbed
@@ -48725,10 +48702,10 @@ nairobi
 naive
 naively
 naives
-naivetƒ
+naivet 
 naivety
-na’f
-na’fs
+na f
+na fs
 naked
 nakedly
 nakedness
@@ -50160,7 +50137,6 @@ nymphomania
 nymphomaniac
 nymphomaniacs
 nymphs
-o
 oaf
 oafish
 oafs
@@ -51594,7 +51570,7 @@ outreach
 outreached
 outreaches
 outreaching
-outrƒ
+outr 
 outrider
 outriders
 outrigger
@@ -52381,11 +52357,8 @@ oyster
 oystercatcher
 oystercatchers
 oysters
-oz
 ozone
 ozonosphere
-p
-pa
 pablo
 pabulum
 pacare
@@ -53273,7 +53246,7 @@ passerine
 passerines
 passers
 passes
-passƒ
+pass 
 passim
 passing
 passion
@@ -57356,7 +57329,7 @@ prey
 preyed
 preying
 preys
-prƒcis
+pr cis
 priapism
 price
 priced
@@ -58189,8 +58162,8 @@ protester
 protesters
 protesting
 protests
-protƒgƒ
-protƒgƒs
+prot g 
+prot g s
 protheses
 prothesis
 prothonotaries
@@ -58246,7 +58219,7 @@ proved
 proven
 provenance
 provence
-provenˆal
+proven al
 provender
 provenience
 proverb
@@ -58936,20 +58909,15 @@ pythagoras
 pythagorean
 python
 pythons
-q
 qantas
 qatar
-qc
 qdos
 qed
-ql
-qls
 qmon
 qom
 qpac
 qptr
 qram
-qt
 qtyp
 qua
 quaalude
@@ -59384,7 +59352,6 @@ quotidian
 quotient
 quotients
 quoting
-r
 ra
 rabat
 rabbet
@@ -60463,7 +60430,7 @@ recheck
 rechecked
 rechecking
 rechecks
-recherchƒ
+recherch 
 recht
 recidivism
 recidivist
@@ -63456,7 +63423,7 @@ risks
 risky
 risotto
 risottos
-risquƒ
+risqu 
 rissole
 rissoles
 rita
@@ -63862,8 +63829,8 @@ rotundity
 rouble
 roubles
 rouen
-rouƒ
-rouƒs
+rou 
+rou s
 rouge
 rouged
 rouges
@@ -64276,7 +64243,6 @@ ryde
 rye
 ryedale
 ryes
-s
 saab
 saabs
 saar
@@ -64926,10 +64892,10 @@ sausage
 sausages
 sauterne
 sauternes
-sautƒ
-sautƒed
-sautƒing
-sautƒs
+saut 
+saut ed
+saut ing
+saut s
 sauvignon
 savable
 savage
@@ -69027,7 +68993,7 @@ societal
 societas
 societies
 society
-sociƒtƒ
+soci t 
 sociologic
 sociological
 sociologically
@@ -69092,8 +69058,8 @@ soggiest
 sogginess
 soggy
 soho
-soignƒ
-soignƒe
+soign 
+soign e
 soil
 soiled
 soiling
@@ -69435,8 +69401,8 @@ sot
 sots
 soubrette
 soubrettes
-soufflƒ
-soufflƒs
+souffl 
+souffl s
 sough
 soughed
 soughing
@@ -73431,8 +73397,6 @@ systole
 systoles
 systolic
 szechwan
-t
-ta
 tab
 tabard
 tabards
@@ -75947,7 +75911,7 @@ touchdown
 touchdowns
 touched
 touches
-touchƒ
+touch 
 touchier
 touchiest
 touchiness
@@ -77639,7 +77603,6 @@ tythes
 tything
 tzar
 tzars
-u
 uberrima
 ubi
 ubiquitous
@@ -80311,7 +80274,6 @@ uxoriously
 uzbek
 uzbekistan
 uzbeks
-v
 vac
 vacancies
 vacancy
@@ -81638,7 +81600,6 @@ voyeurism
 voyeuristic
 voyeurs
 vroom
-vu
 vulcan
 vulcanisation
 vulcanise
@@ -81683,7 +81644,6 @@ vultures
 vulva
 vulvas
 vying
-w
 wabble
 wackier
 wackiest
@@ -83647,7 +83607,6 @@ wynn
 wyoming
 wysiwyg
 wyvern
-x
 xebec
 xebecs
 xenodochium
@@ -83694,7 +83653,6 @@ xylophone
 xylophones
 xylophonist
 xylophonists
-y
 yacht
 yachted
 yachter
@@ -83925,8 +83883,6 @@ yuppie
 yuppies
 yvette
 yvonne
-ywca
-z
 zabaglione
 zabagliones
 zachary
@@ -84093,7 +84049,3 @@ zygotes
 zygotic
 zymology
 zymurgy
-ƒclat
-ƒlan
-ƒmigrƒs
-ƒpoque
