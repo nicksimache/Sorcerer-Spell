@@ -28,7 +28,7 @@ int main()
 
 	int gameStage = 0;
 
-	sf::IpAddress ip = sf::IpAddress::getPublicAddress(); // maybe need to change later
+	sf::IpAddress ip = sf::IpAddress::getLocalAddress(); // maybe need to change later
 	sf::TcpSocket socket;
 	char connectionType;
 
@@ -41,15 +41,16 @@ int main()
 	{
 		std::cout << ip;
 		sf::TcpListener listener;
-		listener.listen(2000); //port
+		listener.listen(55001); //port
 		listener.accept(socket);
 
 		gameStage = 1;
+
 	}
 	else
 	{
 		std::cin >> ip;
-		socket.connect(ip, 2000);
+		socket.connect(ip, 55001);
 
 		gameStage = 2;
 	}
@@ -183,7 +184,9 @@ int main()
 
 	while (window.isOpen())
 	{
-		sf::Packet updateGameStage;
+		sf::Packet packet;
+		socket.receive(packet);
+
 		deltaTime = clock.restart().asSeconds();
 
 		sf::Event evnt;
@@ -205,12 +208,11 @@ int main()
 
 		prevPosition = player.getPosition();
 
-		socket.receive(updateGameStage);
-		if (updateGameStage >> updateStage)
+		if (packet >> updateStage)
 		{
 			if (updateStage == 1)
 			{
-				updateStage == 0;
+				updateStage = 0;
 				gameStage++;
 				if (gameStage == 3)
 				{
@@ -291,6 +293,7 @@ int main()
 
 		}
 
+		//bounds
 		if (connectionType == 'c') //player on right
 		{
 			if (player.getPosition().x > 1796)
@@ -331,21 +334,13 @@ int main()
 			}
 		}
 
-		sf::Packet packet;
-
 		if (prevPosition != player.getPosition())
 		{
 			packet << player.getPosition().x << player.getPosition().y;
-			socketCounter++;
-			if (socketCounter == 3) {
-				socketCounter = 0;
-				socket.send(packet);
-			}
+			
 	
 		}
 
-		
-		socket.receive(packet);
 		if (packet >> p2Position.x >> p2Position.y)
 		{
 			if (player2.getPosition().x < p2Position.x)
@@ -378,7 +373,6 @@ int main()
 
 		}
 		*/
-
 		for (int i = 0; i < loadCounter.x; i++) {
 			for (int j = 0; j < loadCounter.y; j++) {
 				if (map[i][j] == 1)
@@ -402,7 +396,6 @@ int main()
 			{
 				int letterX = (1920 - 760) / 2 + i * 110;
 				int letterY = (1080 - 760) / 2 + j * 110;
-				sf::Packet boardPacket;
 
 				sf::Texture letterTexture;
 				std::string str = "sprites/letters/";
@@ -430,11 +423,11 @@ int main()
 
 				if (gameStage == 1) // if it is your turn
 				{
-					boardPacket = sf::Packet();
 
 					// if you click on one of the letters
 					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (sf::Mouse::getPosition(window).x >= letterX && sf::Mouse::getPosition(window).x <= letterX + 100) && (sf::Mouse::getPosition(window).y >= letterY && sf::Mouse::getPosition(window).y <= letterY + 100))
 					{
+
 						if (!chosenArr[i][j]) {
 							chosenWord += B.getTile(i, j).letter;
 							currentWordPoints += B.getTile(i, j).point;
@@ -447,7 +440,6 @@ int main()
 					if (!(sf::Mouse::isButtonPressed(sf::Mouse::Left)))
 					{
 						
-
 						// if its valid, change turn, add points etc.
 						if (isEnglishWord)
 						{
@@ -460,8 +452,13 @@ int main()
 								gameStage == 1;
 							}
 							updateStage = 1;
-							updateGameStage << updateStage;
-							socket.send(updateGameStage);
+							packet << updateStage;
+						}
+						else 
+						{
+							updateStage = 0;
+							packet << updateStage;
+
 						}
 						chosenWord = "";
 						currentWordPoints = 0;
@@ -481,7 +478,7 @@ int main()
 					}
 
 					//if its your turn, send the selected word along with the coordinates that are selected
-					boardPacket << chosenWord;
+					packet << chosenWord;
 
 					for (int p = 0; p < B.xDim; p++)
 					{
@@ -489,17 +486,16 @@ int main()
 						{
 							if (chosenArr[p][q])
 							{
-								boardPacket << p << q;
+								packet << p << q;
 							}
 						}
 					}
-					socket.send(boardPacket);
+					
 					
 				}
 				else if(gameStage == 2)
 				{
-					socket.receive(boardPacket);
-					if (boardPacket >> chosenWord)
+					if (packet >> chosenWord)
 					{
 						for (int p = 0; p < B.xDim; p++)
 						{
@@ -511,7 +507,7 @@ int main()
 
 						
 						int x, y;
-						while (boardPacket >> x >> y)
+						while (packet >> x >> y)
 						{
 							chosenArr[x][y] = true;
 						}
@@ -564,6 +560,12 @@ int main()
 		window.draw(player2);
 		window.display();
 		window.clear();
+
+		socketCounter++;
+		if (socketCounter == 3) {
+			socketCounter = 0;
+			socket.send(packet);
+		}
 	}
 
 	system("pause");
