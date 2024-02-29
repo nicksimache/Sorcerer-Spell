@@ -185,7 +185,6 @@ int main()
 	while (window.isOpen())
 	{
 		sf::Packet packet;
-		socket.receive(packet);
 
 		
 
@@ -211,8 +210,8 @@ int main()
 		prevPosition = player.getPosition();
 		
 
-		//if (focused)
-		//{
+		if (focused)
+		{
 
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) // LEFT
@@ -280,7 +279,7 @@ int main()
 				}
 			}
 
-		//}
+		}
 
 		//bounds
 		if (connectionType == 'c') //player on right
@@ -323,8 +322,16 @@ int main()
 			}
 		}
 
-		packet << player.getPosition().x << player.getPosition().y;
-
+		if (prevPosition != player.getPosition()) {
+			packet << player.getPosition().x << player.getPosition().y;
+			socketCounter++;
+			if (socketCounter == 3) {
+				socketCounter = 0;
+				socket.send(packet);
+			}
+		}
+		
+		socket.receive(packet);
 		if (packet >> p2Position.x >> p2Position.y)
 		{
 			if (player2.getPosition().x < p2Position.x)
@@ -347,19 +354,7 @@ int main()
 
 		}
 		
-		if (packet >> updateStage)
-		{
-			if (updateStage == 1)
-			{
-				updateStage = 0;
-				gameStage++;
-				if (gameStage == 3)
-				{
-					gameStage = 1;
-				}
-			}
-		}
-
+		
 
 		/* implement magic here
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
@@ -451,12 +446,7 @@ int main()
 							updateStage = 1;
 							packet << updateStage;
 						}
-						else 
-						{
-							updateStage = 0;
-							packet << updateStage;
-
-						}
+						
 						chosenWord = "";
 						currentWordPoints = 0;
 
@@ -490,8 +480,22 @@ int main()
 					
 					
 				}
-				else if(gameStage == 2)
+				socket.receive(packet);
+				if(gameStage == 2)
 				{
+					if (packet >> updateStage)
+					{
+						if (updateStage == 1)
+						{
+							updateStage = 0;
+							gameStage++;
+							if (gameStage == 3)
+							{
+								gameStage = 1;
+							}
+						}
+					}
+
 					if (packet >> chosenWord)
 					{
 						for (int p = 0; p < B.xDim; p++)
@@ -557,12 +561,6 @@ int main()
 		window.draw(player2);
 		window.display();
 		window.clear();
-
-		socketCounter++;
-		if (socketCounter == 3) {
-			socketCounter = 0;
-			socket.send(packet);
-		}
 	}
 
 	system("pause");
