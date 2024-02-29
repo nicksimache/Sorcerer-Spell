@@ -187,6 +187,8 @@ int main()
 		sf::Packet packet;
 		socket.receive(packet);
 
+		
+
 		deltaTime = clock.restart().asSeconds();
 
 		sf::Event evnt;
@@ -207,23 +209,10 @@ int main()
 		}
 
 		prevPosition = player.getPosition();
-
-		if (packet >> updateStage)
-		{
-			if (updateStage == 1)
-			{
-				updateStage = 0;
-				gameStage++;
-				if (gameStage == 3)
-				{
-					gameStage = 1;
-				}
-			}
-		}
 		
 
-		if (focused)
-		{
+		//if (focused)
+		//{
 
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) // LEFT
@@ -291,7 +280,7 @@ int main()
 				}
 			}
 
-		}
+		//}
 
 		//bounds
 		if (connectionType == 'c') //player on right
@@ -334,12 +323,7 @@ int main()
 			}
 		}
 
-		if (prevPosition != player.getPosition())
-		{
-			packet << player.getPosition().x << player.getPosition().y;
-			
-	
-		}
+		packet << player.getPosition().x << player.getPosition().y;
 
 		if (packet >> p2Position.x >> p2Position.y)
 		{
@@ -363,6 +347,19 @@ int main()
 
 		}
 		
+		if (packet >> updateStage)
+		{
+			if (updateStage == 1)
+			{
+				updateStage = 0;
+				gameStage++;
+				if (gameStage == 3)
+				{
+					gameStage = 1;
+				}
+			}
+		}
+
 
 		/* implement magic here
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
