@@ -325,35 +325,9 @@ int main()
 
 		if (prevPosition != player.getPosition()) {
 			packet << player.getPosition().x << player.getPosition().y;
-			socketCounter++;
-			if (socketCounter == 3) {
-				socketCounter = 0;
-				socket.send(packet);
-			}
+			
 		}
-		
-		socket.receive(packet);
-		if (packet >> p2Position.x >> p2Position.y)
-		{
-			if (player2.getPosition().x < p2Position.x)
-			{
-				animation2.Update(0, deltaTime);
-			}
-			else if (player2.getPosition().x > p2Position.x)
-			{
-				animation2.Update(1, deltaTime);
-			}
-			else if (animation2.getCurrentImage().y == 0)
-			{
-				animation2.Update(0, deltaTime);
-			}
-			else if (animation2.getCurrentImage().y == 1)
-			{
-				animation2.Update(1, deltaTime);
-			}
-			player2.setPosition(p2Position);
-
-		}
+				
 		
 		
 
@@ -383,8 +357,6 @@ int main()
 			}
 		}
 		
-		sf::Packet packet2;
-
 		for (int i = 0; i < B.xDim; i++)
 		{
 			for (int j = 0; j < B.yDim; j++)
@@ -451,11 +423,11 @@ int main()
 								gameStage == 1;
 							}
 							updateStage = 1;
-							packet2 << updateStage;
+							packet << updateStage;
 						}
 						else {
 							updateStage = 0;
-							packet2 << updateStage;
+							packet << updateStage;
 						}
 						
 						chosenWord = "";
@@ -476,7 +448,7 @@ int main()
 					}
 
 					//if its your turn, send the selected word along with the coordinates that are selected
-					packet2 << chosenWord;
+					packet << chosenWord;
 
 					for (int p = 0; p < B.xDim; p++)
 					{
@@ -484,18 +456,47 @@ int main()
 						{
 							if (chosenArr[p][q])
 							{
-								packet2 << p << q;
+								packet << p << q;
 							}
 						}
 					}
 					
-					
+
 				}
-				socket.send(packet2);
-				socket.receive(packet2);
+				socketCounter++;
+				if (socketCounter == 3) {
+					socketCounter = 0;
+					socket.send(packet);
+				}
+				
+				socket.receive(packet);
+				if (packet >> p2Position.x >> p2Position.y)
+				{
+					if (player2.getPosition().x < p2Position.x)
+					{
+						animation2.Update(0, deltaTime);
+					}
+					else if (player2.getPosition().x > p2Position.x)
+					{
+						animation2.Update(1, deltaTime);
+					}
+					else if (animation2.getCurrentImage().y == 0)
+					{
+						animation2.Update(0, deltaTime);
+					}
+					else if (animation2.getCurrentImage().y == 1)
+					{
+						animation2.Update(1, deltaTime);
+					}
+					player2.setPosition(p2Position);
+
+				}
+
+
 				if(gameStage == 2)
 				{
-					if (packet2 >> updateStage)
+
+					if (packet >> updateStage)
 					{
 						if (updateStage == 1)
 						{
@@ -508,7 +509,7 @@ int main()
 						}
 					}
 
-					if (packet2 >> chosenWord)
+					if (packet >> chosenWord)
 					{
 						for (int p = 0; p < B.xDim; p++)
 						{
@@ -520,7 +521,7 @@ int main()
 
 						
 						int x, y;
-						while (packet2 >> x >> y)
+						while (packet >> x >> y)
 						{
 							chosenArr[x][y] = true;
 						}
