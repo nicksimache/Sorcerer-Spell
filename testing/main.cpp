@@ -497,13 +497,14 @@ int main()
 						}
 					}
 					toSend += "e";
-					socket.send(toSend.c_str(), toSend.length() + 1);
+					//socket.send(toSend.c_str(), toSend.length() + 1);
 
 				}
 
 
 				if(gameStage == 2)
 				{
+					/*
 					socket.receive(buffer, sizeof(buffer), recieved);
 
 					int s = 0;
@@ -516,7 +517,9 @@ int main()
 					while (buffer[s] != 101) {
 						sf::Vector2i chosenCords(buffer[s]-48, buffer[s+1]-48);
 						L.push_back(chosenCords);
+						s += 2;
 					}
+					*/
 					
 
 					if (updateStage == 1)
