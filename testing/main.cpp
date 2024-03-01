@@ -329,6 +329,9 @@ int main()
 			packet << player.getPosition().x << player.getPosition().y;
 			
 		}
+		else {
+			packet << -1 << -1;
+		}
 				
 		
 		
@@ -474,23 +477,26 @@ int main()
 				socket.receive(packet);
 				if (packet >> p2Position.x >> p2Position.y)
 				{
-					if (player2.getPosition().x < p2Position.x)
-					{
-						animation2.Update(0, deltaTime);
+					if (p2Position.x != -1 && p2Position.y != -1) {
+						if (player2.getPosition().x < p2Position.x)
+						{
+							animation2.Update(0, deltaTime);
+						}
+						else if (player2.getPosition().x > p2Position.x)
+						{
+							animation2.Update(1, deltaTime);
+						}
+						else if (animation2.getCurrentImage().y == 0)
+						{
+							animation2.Update(0, deltaTime);
+						}
+						else if (animation2.getCurrentImage().y == 1)
+						{
+							animation2.Update(1, deltaTime);
+						}
+						player2.setPosition(p2Position);
 					}
-					else if (player2.getPosition().x > p2Position.x)
-					{
-						animation2.Update(1, deltaTime);
-					}
-					else if (animation2.getCurrentImage().y == 0)
-					{
-						animation2.Update(0, deltaTime);
-					}
-					else if (animation2.getCurrentImage().y == 1)
-					{
-						animation2.Update(1, deltaTime);
-					}
-					player2.setPosition(p2Position);
+					
 
 				}
 
