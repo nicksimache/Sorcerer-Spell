@@ -325,6 +325,7 @@ int main()
 			}
 		}
 
+
 		if (prevPosition != player.getPosition()) {
 			packet << player.getPosition().x << player.getPosition().y;
 			
@@ -453,7 +454,7 @@ int main()
 					}
 
 					//if its your turn, send the selected word along with the coordinates that are selected
-					packet << chosenWord;
+					packet << 0;
 
 					for (int p = 0; p < B.xDim; p++)
 					{
@@ -477,6 +478,7 @@ int main()
 				socket.receive(packet);
 				if (packet >> p2Position.x >> p2Position.y)
 				{
+					std::cout << p2Position.x << " " << p2Position.y << std::endl;
 					if (p2Position.x != -1 && p2Position.y != -1) {
 						if (player2.getPosition().x < p2Position.x)
 						{
@@ -517,7 +519,8 @@ int main()
 						}
 					}
 
-					if (packet >> chosenWord)
+					int test;
+					if (packet >> test)
 					{
 
 						std::vector<sf::Vector2i>L;
