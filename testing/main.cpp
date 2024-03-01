@@ -383,6 +383,8 @@ int main()
 			}
 		}
 		
+		sf::Packet packet2;
+
 		for (int i = 0; i < B.xDim; i++)
 		{
 			for (int j = 0; j < B.yDim; j++)
@@ -449,11 +451,11 @@ int main()
 								gameStage == 1;
 							}
 							updateStage = 1;
-							packet << updateStage;
+							packet2 << updateStage;
 						}
 						else {
 							updateStage = 0;
-							packet << updateStage;
+							packet2 << updateStage;
 						}
 						
 						chosenWord = "";
@@ -474,7 +476,7 @@ int main()
 					}
 
 					//if its your turn, send the selected word along with the coordinates that are selected
-					packet << chosenWord;
+					packet2 << chosenWord;
 
 					for (int p = 0; p < B.xDim; p++)
 					{
@@ -482,17 +484,18 @@ int main()
 						{
 							if (chosenArr[p][q])
 							{
-								packet << p << q;
+								packet2 << p << q;
 							}
 						}
 					}
 					
 					
 				}
-				socket.receive(packet);
+				socket.send(packet2);
+				socket.receive(packet2);
 				if(gameStage == 2)
 				{
-					if (packet >> updateStage)
+					if (packet2 >> updateStage)
 					{
 						if (updateStage == 1)
 						{
@@ -505,7 +508,7 @@ int main()
 						}
 					}
 
-					if (packet >> chosenWord)
+					if (packet2 >> chosenWord)
 					{
 						for (int p = 0; p < B.xDim; p++)
 						{
@@ -517,7 +520,7 @@ int main()
 
 						
 						int x, y;
-						while (packet >> x >> y)
+						while (packet2 >> x >> y)
 						{
 							chosenArr[x][y] = true;
 						}
