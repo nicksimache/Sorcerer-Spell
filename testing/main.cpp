@@ -37,6 +37,7 @@ int main()
 	sf::TcpSocket socket;
 	char connectionType;
 	char buffer[2000];
+	std::size_t recieved;
 
 	std::cout << "(s) for server, (c) for client: ";
 	std::cin >> connectionType;
@@ -193,6 +194,9 @@ int main()
 		sf::Packet packet;
 
 		
+		std::vector<sf::Vector2i>L;
+		
+		
 
 		deltaTime = clock.restart().asSeconds();
 
@@ -331,11 +335,34 @@ int main()
 
 		if (prevPosition != player.getPosition()) {
 			packet << player.getPosition().x << player.getPosition().y;
-			
+			socketCounter++;
+			if (socketCounter == 3) {
+				socketCounter = 0;
+				socket.send(packet);
+			}
 		}
-		else {
-			packet << 0 << 0;
+		
+		socket.receive(packet);
+		if (packet >> p2Position.x >> p2Position.y) {
+			if (player2.getPosition().x < p2Position.x)
+			{
+				animation2.Update(0, deltaTime);
+			}
+			else if (player2.getPosition().x > p2Position.x)
+			{
+				animation2.Update(1, deltaTime);
+			}
+			else if (animation2.getCurrentImage().y == 0)
+			{
+				animation2.Update(0, deltaTime);
+			}
+			else if (animation2.getCurrentImage().y == 1)
+			{
+				animation2.Update(1, deltaTime);
+			}
+			player2.setPosition(p2Position);
 		}
+		
 				
 		
 		
@@ -366,6 +393,8 @@ int main()
 			}
 		}
 		
+		std::string toSend = "";
+
 		for (int i = 0; i < B.xDim; i++)
 		{
 			for (int j = 0; j < B.yDim; j++)
@@ -399,7 +428,7 @@ int main()
 
 				if (gameStage == 1) // if it is your turn
 				{
-
+					toSend += chosenWord;
 					// if you click on one of the letters
 					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (sf::Mouse::getPosition(window).x >= letterX && sf::Mouse::getPosition(window).x <= letterX + 100) && (sf::Mouse::getPosition(window).y >= letterY && sf::Mouse::getPosition(window).y <= letterY + 100))
 					{
@@ -431,12 +460,10 @@ int main()
 							{
 								gameStage == 1;
 							}
-							updateStage = 1;
-							packet << updateStage;
+							toSend += "1";
 						}
 						else {
-							updateStage = 0;
-							packet << updateStage;
+							toSend += "0";
 						}
 						
 						chosenWord = "";
@@ -457,7 +484,6 @@ int main()
 					}
 
 					//if its your turn, send the selected word along with the coordinates that are selected
-					packet << 0;
 
 					for (int p = 0; p < B.xDim; p++)
 					{
@@ -465,62 +491,34 @@ int main()
 						{
 							if (chosenArr[p][q])
 							{
-								packet << p << q;
+								toSend += std::to_string(p);
+								toSend += std::to_string(q);
 							}
 						}
 					}
-					
+					toSend += "e";
+					socket.send(toSend.c_str(), toSend.length() + 1);
 
 				}
-				socketCounter++;
-				if (socketCounter == 3) {
-					socketCounter = 0;
-					socket.send(packet);
-				}
-				
-				socket.receive(packet);
-				int x, y;
-				int counter = 0;
-				std::vector<sf::Vector2i>L;
-				while (packet >> x >> y) {
-					if (counter == 0) {
-						p2Position.x = x;
-						p2Position.y = y;
-					}
-					else if (counter == 1) {
-						updateStage = x;
-						test = y;
-					}
-					else {
-						sf::Vector2i chosenCords(x, y);
-						L.push_back(chosenCords);
-					}
-					counter++;
-				}
 
-				std::cout << p2Position.x << " " << p2Position.y << std::endl;
-				if (p2Position.x != 0 && p2Position.y != 0) {
-					if (player2.getPosition().x < p2Position.x)
-					{
-						animation2.Update(0, deltaTime);
-					}
-					else if (player2.getPosition().x > p2Position.x)
-					{
-						animation2.Update(1, deltaTime);
-					}
-					else if (animation2.getCurrentImage().y == 0)
-					{
-						animation2.Update(0, deltaTime);
-					}
-					else if (animation2.getCurrentImage().y == 1)
-					{
-						animation2.Update(1, deltaTime);
-					}
-					player2.setPosition(p2Position);
-				}
 
 				if(gameStage == 2)
 				{
+					socket.receive(buffer, sizeof(buffer), recieved);
+
+					int s = 0;
+					while (buffer[s] != 48 && buffer[s] != 49) {
+						std::string buffstring(1, buffer[s]);
+						chosenWord += buffstring;
+						s++;
+					}
+					updateStage = buffer[s] - 48;
+					while (buffer[s] != 101) {
+						sf::Vector2i chosenCords(buffer[s]-48, buffer[s+1]-48);
+						L.push_back(chosenCords);
+					}
+					
+
 					if (updateStage == 1)
 					{
 						updateStage = 0;
@@ -597,6 +595,8 @@ int main()
 		window.draw(player2);
 		window.display();
 		window.clear();
+
+		
 	}
 
 	system("pause");
