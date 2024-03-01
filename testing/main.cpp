@@ -18,6 +18,9 @@
 
 int main()
 {
+	int test;
+
+
 	Board B(7, 7);
 	int updateStage = 0;
 
@@ -331,7 +334,7 @@ int main()
 			
 		}
 		else {
-			packet << -1 << -1;
+			packet << 0 << 0;
 		}
 				
 		
@@ -476,80 +479,71 @@ int main()
 				}
 				
 				socket.receive(packet);
-				if (packet >> p2Position.x >> p2Position.y)
-				{
-					std::cout << p2Position.x << " " << p2Position.y << std::endl;
-					if (p2Position.x != -1 && p2Position.y != -1) {
-						if (player2.getPosition().x < p2Position.x)
-						{
-							animation2.Update(0, deltaTime);
-						}
-						else if (player2.getPosition().x > p2Position.x)
-						{
-							animation2.Update(1, deltaTime);
-						}
-						else if (animation2.getCurrentImage().y == 0)
-						{
-							animation2.Update(0, deltaTime);
-						}
-						else if (animation2.getCurrentImage().y == 1)
-						{
-							animation2.Update(1, deltaTime);
-						}
-						player2.setPosition(p2Position);
+				int x, y;
+				int counter = 0;
+				std::vector<sf::Vector2i>L;
+				while (packet >> x >> y) {
+					if (counter == 0) {
+						p2Position.x = x;
+						p2Position.y = y;
 					}
-					
-
+					else if (counter == 1) {
+						updateStage = x;
+						test = y;
+					}
+					else {
+						sf::Vector2i chosenCords(x, y);
+						L.push_back(chosenCords);
+					}
+					counter++;
 				}
 
+				std::cout << p2Position.x << " " << p2Position.y << std::endl;
+				if (p2Position.x != 0 && p2Position.y != 0) {
+					if (player2.getPosition().x < p2Position.x)
+					{
+						animation2.Update(0, deltaTime);
+					}
+					else if (player2.getPosition().x > p2Position.x)
+					{
+						animation2.Update(1, deltaTime);
+					}
+					else if (animation2.getCurrentImage().y == 0)
+					{
+						animation2.Update(0, deltaTime);
+					}
+					else if (animation2.getCurrentImage().y == 1)
+					{
+						animation2.Update(1, deltaTime);
+					}
+					player2.setPosition(p2Position);
+				}
 
 				if(gameStage == 2)
 				{
-
-					if (packet >> updateStage)
+					if (updateStage == 1)
 					{
-						if (updateStage == 1)
+						updateStage = 0;
+						gameStage++;
+						if (gameStage == 3)
 						{
-							updateStage = 0;
-							gameStage++;
-							if (gameStage == 3)
-							{
-								gameStage = 1;
-							}
+							gameStage = 1;
 						}
 					}
 
-					int test;
-					if (packet >> test)
+					for (int p = 0; p < B.xDim; p++)
 					{
-
-						std::vector<sf::Vector2i>L;
-						int x, y;
-						while (packet >> x >> y)
+						for (int q = 0; q < B.yDim; q++)
 						{
-							sf::Vector2i chosenCords(x,y);
-							L.push_back(chosenCords);
-						}
-
-						for (int p = 0; p < B.xDim; p++)
-						{
-							for (int q = 0; q < B.yDim; q++)
-							{
-								for (int l = 0; l < L.size(); l++) {
-									if (L[l].x == p && L[l].y == q) {
-										chosenArr[p][q] = true;
-									}
-									else {
-										chosenArr[p][q] = false;
-									}
+							for (int l = 0; l < L.size(); l++) {
+								if (L[l].x == p && L[l].y == q) {
+									chosenArr[p][q] = true;
+								}
+								else {
+									chosenArr[p][q] = false;
 								}
 							}
 						}
-
-						
-						
-				
-							
 					}
 					
 
