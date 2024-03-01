@@ -9,6 +9,7 @@
 #include <fstream>
 #include <cctype>
 #include <vector>
+#include <list>
 #include <algorithm>
 
 #include "Animation.h"
@@ -32,6 +33,7 @@ int main()
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress(); // maybe need to change later
 	sf::TcpSocket socket;
 	char connectionType;
+	char buffer[2000];
 
 	std::cout << "(s) for server, (c) for client: ";
 	std::cin >> connectionType;
@@ -511,20 +513,32 @@ int main()
 
 					if (packet >> chosenWord)
 					{
+
+						std::vector<sf::Vector2i>L;
+						int x, y;
+						while (packet >> x >> y)
+						{
+							sf::Vector2i chosenCords(x,y);
+							L.push_back(chosenCords);
+						}
+
 						for (int p = 0; p < B.xDim; p++)
 						{
 							for (int q = 0; q < B.yDim; q++)
 							{
-								chosenArr[p][q] = false;
+								for (int l = 0; l < L.size(); l++) {
+									if (L[l].x == p && L[l].y == q) {
+										chosenArr[p][q] = true;
+									}
+									else {
+										chosenArr[p][q] = false;
+									}
+								}
 							}
 						}
 
 						
-						int x, y;
-						while (packet >> x >> y)
-						{
-							chosenArr[x][y] = true;
-						}
+						
 				
 							
 					}
