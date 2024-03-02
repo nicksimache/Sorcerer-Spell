@@ -18,8 +18,8 @@
 
 int main()
 {
-	int test;
-
+	std::map<sf::Vector2f, sf::Vector2f> magicMap;
+	int numMagic = 0;
 
 	Board B(7, 7);
 	int updateStage = 0;
@@ -30,8 +30,6 @@ int main()
 	// gameStage = 1 - player1 turn
 	// gameStage = 2 - player2 turn
 	// gameStage = 3 - fight
-
-	int gameStage = 0;
 
 	sf::IpAddress ip = sf::IpAddress::getLocalAddress(); // maybe need to change later
 	sf::TcpSocket socket;
@@ -51,7 +49,6 @@ int main()
 		listener.listen(55001); //port
 		listener.accept(socket);
 
-		gameStage = 1;
 
 	}
 	else
@@ -59,7 +56,6 @@ int main()
 		std::cin >> ip;
 		socket.connect(ip, 55001);
 
-		gameStage = 2;
 	}
 
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "game", sf::Style::Default); //change window size
@@ -80,7 +76,7 @@ int main()
 		player.setPosition(220, 540);
 		player2.setPosition(1760, 540);
 	}
-	
+
 	sf::Texture playerTexture;
 	sf::Texture player2Texture;
 	playerTexture.loadFromFile("sprites/RedSheet.png");
@@ -193,10 +189,10 @@ int main()
 	{
 		sf::Packet packet;
 
-		
+
 		std::vector<sf::Vector2i>L;
-		
-		
+
+
 
 		deltaTime = clock.restart().asSeconds();
 
@@ -218,7 +214,7 @@ int main()
 		}
 
 		prevPosition = player.getPosition();
-		
+
 
 		if (focused)
 		{
@@ -310,7 +306,7 @@ int main()
 			{
 				player.setPosition(player.getPosition().x, 900);
 			}
-		
+
 		}
 		else //player on left
 		{
@@ -341,7 +337,7 @@ int main()
 				socket.send(packet);
 			}
 		}
-		
+
 		socket.receive(packet);
 		if (packet >> p2Position.x >> p2Position.y) {
 			if (player2.getPosition().x < p2Position.x)
@@ -362,20 +358,48 @@ int main()
 			}
 			player2.setPosition(p2Position);
 		}
-		
-				
-		
-		
 
-		/* implement magic here
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+
+
+		sf::Packet MagicPacket;
+		bool magic = false;
+		sf::Vector2f direction(0.0,0.0);
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && ammo > 0)
 		{
+			magic = true;
+			ammo--;
 			//sf::Mouse::getPosition(window); need this so that a button press is relative to the window and not the screen
 			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			player.setPosition((float)mousePos.x, (float)mousePos.y);
-
+			direction.x = (float)(abs(mousePos.x - player.getPosition().x));
+			direction.y = (float)(abs(mousePos.y - player.getPosition().y));
+			int length = sqrt(direction.x * direction.x + direction.y * direction.y);
+			direction.x = direction.x / length;
+			direction.y = direction.y / length;
+			
 		}
-		*/
+
+		if (magic) {
+			magic = false;
+			MagicPacket << direction.x << direction.y;
+			socket.send(MagicPacket);
+			if (connectionType == 's') {
+				magicMap.emplace(sf::Vector2f(player.getPosition().x + 50, player.getPosition().y), direction);
+			}
+			else {
+				magicMap.emplace(sf::Vector2f(player.getPosition().x - 50, player.getPosition().y), direction);
+
+			}
+			numMagic++;
+		}
+
+		sf::Vector2f magicDir;
+		socket.receive(MagicPacket);
+		if (MagicPacket >> magicDir.x >> magicDir.y) {
+			magicMap.emplace(player2.getPosition(), magicDir);
+			numMagic++;
+		}
+
+
 		for (int i = 0; i < loadCounter.x; i++) {
 			for (int j = 0; j < loadCounter.y; j++) {
 				if (map[i][j] == 1)
@@ -392,8 +416,29 @@ int main()
 				}
 			}
 		}
-		
-		std::string toSend = "";
+
+		for (const auto& pair : magicMap) {
+
+			sf::RectangleShape magic(sf::Vector2f(50.0, 50.0));
+			magic.setPosition(pair.first);
+
+			sf::Texture magicTexture;
+			magicTexture.loadFromFile("sprites/Floor.png");
+			magic.setTexture(&magicTexture);
+
+			magic.move(pair.second);
+
+			if (magic.getPosition().x >= player.getPosition().x - 50 && magic.getPosition().x <= player.getPosition().x && magic.getPosition().y >= player.getPosition().y - 50 && magic.getPosition().y <= player.getPosition().y) {
+				std::cout << "player2 wins!";
+			}
+			else if (magic.getPosition().x >= player2.getPosition().x - 50 && magic.getPosition().x <= player2.getPosition().x && magic.getPosition().y >= player2.getPosition().y - 50 && magic.getPosition().y <= player2.getPosition().y) {
+				std::cout << "player1 wins!";
+			}
+
+			window.draw(magic);
+			
+
+		}
 
 		for (int i = 0; i < B.xDim; i++)
 		{
@@ -406,7 +451,7 @@ int main()
 				std::string str = "sprites/letters/";
 				str += B.getTile(i, j).letter;
 				str += ".png";
-									
+
 				letterTexture.loadFromFile(str);
 				letterArray[i][j].setTexture(&letterTexture);
 				letterArray[i][j].setPosition(letterX, letterY);
@@ -426,9 +471,8 @@ int main()
 				}
 
 
-				if (gameStage == 1) // if it is your turn
+				if (true)
 				{
-					toSend += chosenWord;
 					// if you click on one of the letters
 					if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (sf::Mouse::getPosition(window).x >= letterX && sf::Mouse::getPosition(window).x <= letterX + 100) && (sf::Mouse::getPosition(window).y >= letterY && sf::Mouse::getPosition(window).y <= letterY + 100))
 					{
@@ -448,24 +492,15 @@ int main()
 					}
 					if (!(sf::Mouse::isButtonPressed(sf::Mouse::Left)))
 					{
-						
+
 						// if its valid, change turn, add points etc.
 						if (isEnglishWord)
 						{
 							isEnglishWord = false;
 							ammo += currentWordPoints;
 							std::cout << "eish";
-							gameStage++;
-							if (gameStage == 3)
-							{
-								gameStage == 1;
-							}
-							toSend += "1";
 						}
-						else {
-							toSend += "0";
-						}
-						
+
 						chosenWord = "";
 						currentWordPoints = 0;
 
@@ -483,75 +518,8 @@ int main()
 
 					}
 
-					//if its your turn, send the selected word along with the coordinates that are selected
-
-					for (int p = 0; p < B.xDim; p++)
-					{
-						for (int q = 0; q < B.yDim; q++)
-						{
-							if (chosenArr[p][q])
-							{
-								toSend += std::to_string(p);
-								toSend += std::to_string(q);
-							}
-						}
-					}
-					toSend += "e";
-					//socket.send(toSend.c_str(), toSend.length() + 1);
-
 				}
 
-
-				if(gameStage == 2)
-				{
-					/*
-					socket.receive(buffer, sizeof(buffer), recieved);
-
-					int s = 0;
-					while (buffer[s] != 48 && buffer[s] != 49) {
-						std::string buffstring(1, buffer[s]);
-						chosenWord += buffstring;
-						s++;
-					}
-					updateStage = buffer[s] - 48;
-					while (buffer[s] != 101) {
-						sf::Vector2i chosenCords(buffer[s]-48, buffer[s+1]-48);
-						L.push_back(chosenCords);
-						s += 2;
-					}
-					*/
-					
-
-					if (updateStage == 1)
-					{
-						updateStage = 0;
-						gameStage++;
-						if (gameStage == 3)
-						{
-							gameStage = 1;
-						}
-					}
-
-					for (int p = 0; p < B.xDim; p++)
-					{
-						for (int q = 0; q < B.yDim; q++)
-						{
-							for (int l = 0; l < L.size(); l++) {
-								if (L[l].x == p && L[l].y == q) {
-									chosenArr[p][q] = true;
-								}
-								else {
-									chosenArr[p][q] = false;
-								}
-							}
-						}
-					}
-					
-
-				}
-				
-
-				
 			}//board refresh
 		}//board refresh
 
@@ -569,37 +537,17 @@ int main()
 				}
 			}
 		}
-		
 
-		/*
-		for (int i = 0; i < B.xDim; i++)
-		{
-			for (int j = 0; j < B.yDim; j++)
-			{
-				sf::Texture letterTexture;
-				std::string str = "sprites/letters/";
-				str += B.getTile(i, j).letter;
-				str += ".png";
-
-				letterTexture.loadFromFile(str);
-				letterArray[i][j].setTexture(&letterTexture);
-				letterArray[i][j].setPosition((1920 - 350) / 2 + i * 50, (1080 - 350) / 2 + j * 50);
-				window.draw(letterArray[i][j]);
-			}
-		}
-		*/
-
-		
 		player.setTextureRect(animation.uvRect);
 		player2.setTextureRect(animation2.uvRect);
 
-		
+
 		window.draw(player);
 		window.draw(player2);
 		window.display();
 		window.clear();
 
-		
+
 	}
 
 	system("pause");
