@@ -54,7 +54,7 @@ int main()
 	}
 	else
 	{
-		//std::cin >> ip;
+		std::cin >> ip;
 		socket.connect(ip, 55001);
 
 	}
@@ -369,6 +369,7 @@ int main()
 		else {
 			packet << 0.0f << 0.0f;
 		}
+		socket.send(packet);
 
 
 		sf::Vector2f magicDir;
