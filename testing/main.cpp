@@ -325,27 +325,29 @@ int main()
 			}
 		}
 
-		bool packetnotsent = true;
+		bool posSent = false;
 		if (prevPosition != player.getPosition()) {
 			socketCounter++;
-			if (socketCounter == 3) {
+			if (socketCounter == 9) {
 				socketCounter = 0;
-				packetnotsent = false;
+				posSent = true;
 				packet << player.getPosition().x << player.getPosition().y;
 
 			}
 			else {
-				packetnotsent = true;
+				posSent = false;
 			}
 		}
-		if (packetnotsent) {
-			packet << 0.0f << 0.0f;
+		if (!posSent) {
+			packet << 2.0f << 2.0f;
 		}
 
 		sf::Vector2f direction(0.0f, 0.0f);
 
+		bool magicSent = false;
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && ammo > 0)
 		{
+			magicSent = true;
 			ammo--;
 			//sf::Mouse::getPosition(window); need this so that a button press is relative to the window and not the screen
 			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
@@ -369,7 +371,9 @@ int main()
 		else {
 			packet << 0.0f << 0.0f;
 		}
-		socket.send(packet);
+		if (magicSent || posSent) {
+			socket.send(packet);
+		}
 
 
 		sf::Vector2f magicDir;
@@ -379,7 +383,7 @@ int main()
 
 			std::cout << p2Position.x << " " << p2Position.y << std::endl;
 
-			if (p2Position.x != 0.0f || p2Position.y != 0.0f) {
+			if (p2Position.x != 2.0f || p2Position.y != 2.0f) {
 				if (player2.getPosition().x < p2Position.x)
 				{
 					animation2.Update(0, deltaTime);
