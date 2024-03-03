@@ -462,32 +462,7 @@ int main()
 			}
 		}
 
-		for (int i = 0; i < magicList.size(); i += 2) {
-			sf::RectangleShape magic(sf::Vector2f(50.0, 50.0));
-			magic.setOrigin(25.0f, 25.0f);
-
-			magic.setPosition(magicList[i]);
-
-			sf::Texture magicTexture;
-			magicTexture.loadFromFile("sprites/Floor.png");
-			magic.setTexture(&magicTexture);
-
-			magicList[i + 1] = normalize(magicList[i + 1]);
-
-			magic.move(magicList[i + 1]);
-
-			if ((magic.getPosition().x >= player.getPosition().x - 50) && (magic.getPosition().x <= player.getPosition().x) && (magic.getPosition().y >= player.getPosition().y - 50) && (magic.getPosition().y <= player.getPosition().y)) {
-				std::cout << "player2 wins!";
-			}
-			else if ((magic.getPosition().x >= player2.getPosition().x - 50) && (magic.getPosition().x <= player2.getPosition().x) && (magic.getPosition().y >= player2.getPosition().y) - 50 && (magic.getPosition().y <= player2.getPosition().y)) {
-				std::cout << "player1 wins!";
-			}
-
-			magicList[i] = magic.getPosition();
-			window.draw(magic);
-
-
-		}
+		
 
 		for (int i = 0; i < B.xDim; i++)
 		{
@@ -585,6 +560,51 @@ int main()
 					isEnglishWord = true;
 				}
 			}
+		}
+
+		for (int i = 0; i < magicList.size(); i += 2) {
+			sf::RectangleShape magic(sf::Vector2f(50.0, 50.0));
+			magic.setOrigin(25.0f, 25.0f);
+
+			magic.setPosition(magicList[i]);
+
+			sf::Texture magicTexture;
+			magicTexture.loadFromFile("sprites/magic.png");
+			magic.setTexture(&magicTexture);
+
+			magicList[i + 1] = normalize(magicList[i + 1]);
+
+			magic.move(magicList[i + 1]);
+
+			if ((magic.getPosition().x >= player.getPosition().x - 50) && (magic.getPosition().x <= player.getPosition().x) && (magic.getPosition().y >= player.getPosition().y - 50) && (magic.getPosition().y <= player.getPosition().y)) {
+				std::cout << "player2 wins!";
+			}
+			else if ((magic.getPosition().x >= player2.getPosition().x - 50) && (magic.getPosition().x <= player2.getPosition().x) && (magic.getPosition().y >= player2.getPosition().y) - 50 && (magic.getPosition().y <= player2.getPosition().y)) {
+				std::cout << "player1 wins!";
+			}
+
+			magicList[i] = magic.getPosition();
+			window.draw(magic);
+
+
+		}
+		std::vector<int>A;
+		int temp = ammo;
+		while (temp > 0) {
+			A.push_back(temp % 10);
+			temp /= 10;
+		}
+		for (int i = A.size() - 1; i >= 0; i--) {
+			sf::RectangleShape letter(sf::Vector2f(32.0f, 32.0f));
+			sf::Texture letterText;
+
+			std::string file = "numbers/";
+			file += A[i];
+			file += ".png";
+			letterText.loadFromFile(file);
+			letter.setTexture(&letterText);
+			letter.setPosition(sf::Vector2f((float)i * 42 - 10, 0.0f));
+			window.draw(letter);
 		}
 
 		player.setTextureRect(animation.uvRect);
