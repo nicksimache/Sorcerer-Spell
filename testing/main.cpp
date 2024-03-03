@@ -188,7 +188,7 @@ int main()
 	sf::Clock clock;
 
 	sf::Clock BulletClock;
-	BulletClock.restart().asSeconds();
+	BulletClock.restart();
 
 	sf::Vector2f prevPosition, p2Position; //positions of the dudes
 
@@ -224,7 +224,6 @@ int main()
 
 		prevPosition = player.getPosition();
 
-		bool posSent = false;
 
 		if (focused)
 		{
@@ -235,36 +234,14 @@ int main()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 				{
 					player.move(-0.35f, -0.35f);
-					socketCounter++;
-					if (socketCounter == 9) {
-						socketCounter = 0;
-						posSent = true;
-						packet << -0.35f << -0.35f;
-
-					}
-
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 				{
 					player.move(-0.35f, 0.35f);
-					socketCounter++;
-					if (socketCounter == 9) {
-						socketCounter = 0;
-						posSent = true;
-						packet << -0.35f << 0.35f;
-
-					}
 				}
 				else
 				{
 					player.move(-0.5f, 0.0f);
-					socketCounter++;
-					if (socketCounter == 9) {
-						socketCounter = 0;
-						posSent = true;
-						packet << -0.5f << -0.0f;
-
-					}
 				}
 				animation.Update(1, deltaTime);
 
@@ -275,35 +252,14 @@ int main()
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 				{
 					player.move(0.35f, -0.35f);
-					socketCounter++;
-					if (socketCounter == 9) {
-						socketCounter = 0;
-						posSent = true;
-						packet << 0.35f << -0.35f;
-
-					}
 				}
 				else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 				{
 					player.move(0.35f, 0.35f);
-					socketCounter++;
-					if (socketCounter == 9) {
-						socketCounter = 0;
-						posSent = true;
-						packet << 0.35f << 0.35f;
-
-					}
 				}
 				else
 				{
 					player.move(0.5f, 0.0f);
-					socketCounter++;
-					if (socketCounter == 9) {
-						socketCounter = 0;
-						posSent = true;
-						packet << 0.5f << 0.0f;
-
-					}
 				}
 				animation.Update(0, deltaTime);
 			}
@@ -312,13 +268,6 @@ int main()
 				if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 				{
 					player.move(0.0f, -0.5f);
-					socketCounter++;
-					if (socketCounter == 9) {
-						socketCounter = 0;
-						posSent = true;
-						packet << 0.0f << -0.5f;
-
-					}
 				}
 				if (animation.getCurrentImage().y == 0) //Sprite facing right
 				{
@@ -334,13 +283,6 @@ int main()
 				if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) && !sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
 				{
 					player.move(0.0f, 0.5f);
-					socketCounter++;
-					if (socketCounter == 9) {
-						socketCounter = 0;
-						posSent = true;
-						packet << 0.0f << 0.5f;
-
-					}
 				}
 				if (animation.getCurrentImage().y == 0) //Sprite facing right
 				{
@@ -350,10 +292,6 @@ int main()
 				{
 					animation.Update(1, deltaTime);
 				}
-			}
-
-			if (!posSent) {
-				packet << 2.0f << 2.0f;
 			}
 
 		}
@@ -399,12 +337,29 @@ int main()
 			}
 		}
 
+		bool posSent = false;
+		if (prevPosition != player.getPosition()) {
+			socketCounter++;
+			if (socketCounter == 9) {
+				socketCounter = 0;
+				posSent = true;
+				packet << player.getPosition().x << player.getPosition().y;
+
+			}
+			else {
+				posSent = false;
+			}
+		}
+		if (!posSent) {
+			packet << 2.0f << 2.0f;
+		}
+
 		sf::Vector2f direction(0.0f, 0.0f);
 
 		bool magicSent = false;
 
 		if (BulletClock.getElapsedTime() > sf::seconds(0.1f)) {
-			BulletClock.restart().asSeconds();
+			BulletClock.restart();
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && ammo > 0)
 			{
@@ -455,20 +410,23 @@ int main()
 			std::cout << p2Position.x << " " << p2Position.y << std::endl;
 
 			if (p2Position.x != 2.0f || p2Position.y != 2.0f) {
-				player2.move(p2Position);
-				if ((p2Position.x == 0.35f && p2Position.y == -0.35f) || (p2Position.x == 0.35f && p2Position.y == 0.35f) || (p2Position.x == 0.5f && p2Position.y == 0.0f))
+				if (player2.getPosition().x < p2Position.x)
 				{
 					animation2.Update(0, deltaTime);
-				} 
-				else if ((p2Position.x == -0.35f && p2Position.y == -0.35f) || (p2Position.x == -0.35f && p2Position.y == 0.35f) || (p2Position.x == -0.5f && p2Position.y == 0.0f)) {
+				}
+				else if (player2.getPosition().x > p2Position.x)
+				{
 					animation2.Update(1, deltaTime);
 				}
-				else if (animation2.getCurrentImage().y == 0) {
+				else if (animation2.getCurrentImage().y == 0)
+				{
 					animation2.Update(0, deltaTime);
 				}
-				else {
-					animation2.Update(0, deltaTime);
+				else if (animation2.getCurrentImage().y == 1)
+				{
+					animation2.Update(1, deltaTime);
 				}
+				player2.setPosition(p2Position);
 			}
 
 			if (magicDir.x != 0.0f || magicDir.y != 0.0f) {
