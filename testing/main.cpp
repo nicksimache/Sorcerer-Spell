@@ -19,6 +19,7 @@
 int main()
 {
 	std::map<sf::Vector2f, sf::Vector2f> magicMap;
+	std::vector<sf::Vector2f> magicList;
 	int numMagic = 0;
 
 	Board B(7, 7);
@@ -360,10 +361,11 @@ int main()
 		}
 
 
-
+		
 		sf::Packet MagicPacket;
 		bool magic = false;
-		sf::Vector2f direction(0.0,0.0);
+		sf::Vector2f direction(0.0f, 0.0f);
+		
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && ammo > 0)
 		{
 			magic = true;
@@ -372,34 +374,46 @@ int main()
 			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 			direction.x = (float)(abs(mousePos.x - player.getPosition().x));
 			direction.y = (float)(abs(mousePos.y - player.getPosition().y));
-			int length = sqrt(direction.x * direction.x + direction.y * direction.y);
-			direction.x = direction.x / length;
-			direction.y = direction.y / length;
+			
 			
 		}
+		
 
 		if (magic) {
 			magic = false;
 			MagicPacket << direction.x << direction.y;
 			socket.send(MagicPacket);
 			if (connectionType == 's') {
-				magicMap.emplace(sf::Vector2f(player.getPosition().x + 50, player.getPosition().y), direction);
+				sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
+				magicList.push_back(magicPos);
+				magicList.push_back(direction);
 			}
 			else {
-				magicMap.emplace(sf::Vector2f(player.getPosition().x - 50, player.getPosition().y), direction);
+				sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
+				magicList.push_back(magicPos);
+				magicList.push_back(direction);
 
 			}
 			numMagic++;
 		}
-
+		
 		sf::Vector2f magicDir;
 		socket.receive(MagicPacket);
 		if (MagicPacket >> magicDir.x >> magicDir.y) {
-			magicMap.emplace(player2.getPosition(), magicDir);
+			if (connectionType == 's') {
+				sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
+				magicList.push_back(magicPos);
+				magicList.push_back(direction);
+			}
+			else {
+				sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
+				magicList.push_back(magicPos);
+				magicList.push_back(direction);
+
+			}			
 			numMagic++;
 		}
-
-
+		
 		for (int i = 0; i < loadCounter.x; i++) {
 			for (int j = 0; j < loadCounter.y; j++) {
 				if (map[i][j] == 1)
@@ -417,21 +431,21 @@ int main()
 			}
 		}
 
-		for (const auto& pair : magicMap) {
+		for (int i = 0; i < magicList.size(); i+2) {
 
 			sf::RectangleShape magic(sf::Vector2f(50.0, 50.0));
-			magic.setPosition(pair.first);
+			magic.setPosition(magicList[i]);
 
 			sf::Texture magicTexture;
 			magicTexture.loadFromFile("sprites/Floor.png");
 			magic.setTexture(&magicTexture);
 
-			magic.move(pair.second);
+			magic.move(magicList[i+1]);
 
-			if (magic.getPosition().x >= player.getPosition().x - 50 && magic.getPosition().x <= player.getPosition().x && magic.getPosition().y >= player.getPosition().y - 50 && magic.getPosition().y <= player.getPosition().y) {
+			if ((magic.getPosition().x >= player.getPosition().x - 50) && (magic.getPosition().x <= player.getPosition().x) && (magic.getPosition().y >= player.getPosition().y - 50) && (magic.getPosition().y <= player.getPosition().y)) {
 				std::cout << "player2 wins!";
 			}
-			else if (magic.getPosition().x >= player2.getPosition().x - 50 && magic.getPosition().x <= player2.getPosition().x && magic.getPosition().y >= player2.getPosition().y - 50 && magic.getPosition().y <= player2.getPosition().y) {
+			else if ((magic.getPosition().x >= player2.getPosition().x - 50) && (magic.getPosition().x <= player2.getPosition().x) && (magic.getPosition().y >= player2.getPosition().y) - 50 && (magic.getPosition().y <= player2.getPosition().y)) {
 				std::cout << "player1 wins!";
 			}
 
