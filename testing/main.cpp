@@ -16,6 +16,15 @@
 #include "Board.h"
 #include "LetterTile.h"
 
+static sf::Vector2f normalize(const sf::Vector2f& source)
+{
+	float length = 7 *sqrt((source.x * source.x) + (source.y * source.y));
+	if (length != 0)
+		return sf::Vector2f(source.x / length, source.y / length);
+	else
+		return source;
+}
+
 int main()
 {
 	std::map<sf::Vector2f, sf::Vector2f> magicMap;
@@ -352,8 +361,8 @@ int main()
 			ammo--;
 			//sf::Mouse::getPosition(window); need this so that a button press is relative to the window and not the screen
 			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			direction.x = (float)(abs(mousePos.x - player.getPosition().x));
-			direction.y = (float)(abs(mousePos.y - player.getPosition().y));
+			direction.x = (float)((mousePos.x - player.getPosition().x));
+			direction.y = (float)((mousePos.y - player.getPosition().y));
 
 			packet << direction.x << direction.y;
 			if (connectionType == 's') {
@@ -455,8 +464,7 @@ int main()
 
 		for (int i = 0; i < magicList.size(); i += 2) {
 			sf::RectangleShape magic(sf::Vector2f(50.0, 50.0));
-
-			window.draw(magic);
+			magic.setOrigin(25.0f, 25.0f);
 
 			magic.setPosition(magicList[i]);
 
@@ -476,6 +484,7 @@ int main()
 			}
 
 			magicList[i] = magic.getPosition();
+			window.draw(magic);
 
 
 		}
@@ -591,13 +600,4 @@ int main()
 	}
 
 	system("pause");
-}
-
-static sf::Vector2f normalize(const sf::Vector2f& source)
-{
-	float length = sqrt((source.x * source.x) + (source.y * source.y));
-	if (length != 0)
-		return sf::Vector2f(source.x / length, source.y / length);
-	else
-		return source;
 }
