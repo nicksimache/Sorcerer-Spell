@@ -329,7 +329,7 @@ int main()
 			}
 		}
 
-
+		bool packetnotsent = false;
 		if (prevPosition != player.getPosition()) {
 			packet << player.getPosition().x << player.getPosition().y;
 			socketCounter++;
@@ -337,27 +337,37 @@ int main()
 				socketCounter = 0;
 				socket.send(packet);
 			}
+			else {
+				packetnotsent = true;
+			}
+		}
+		if (packetnotsent) {
+			packet = sf::Packet();
+			packet << 0 << 0;
 		}
 
 		socket.receive(packet);
 		if (packet >> p2Position.x >> p2Position.y) {
-			if (player2.getPosition().x < p2Position.x)
-			{
-				animation2.Update(0, deltaTime);
+			if (p2Position.x != 0 && p2Position.y != 0) {
+				if (player2.getPosition().x < p2Position.x)
+				{
+					animation2.Update(0, deltaTime);
+				}
+				else if (player2.getPosition().x > p2Position.x)
+				{
+					animation2.Update(1, deltaTime);
+				}
+				else if (animation2.getCurrentImage().y == 0)
+				{
+					animation2.Update(0, deltaTime);
+				}
+				else if (animation2.getCurrentImage().y == 1)
+				{
+					animation2.Update(1, deltaTime);
+				}
+				player2.setPosition(p2Position);
 			}
-			else if (player2.getPosition().x > p2Position.x)
-			{
-				animation2.Update(1, deltaTime);
-			}
-			else if (animation2.getCurrentImage().y == 0)
-			{
-				animation2.Update(0, deltaTime);
-			}
-			else if (animation2.getCurrentImage().y == 1)
-			{
-				animation2.Update(1, deltaTime);
-			}
-			player2.setPosition(p2Position);
+			
 		}
 
 
@@ -396,22 +406,29 @@ int main()
 			}
 			numMagic++;
 		}
+		else {
+			MagicPacket = sf::Packet();
+			MagicPacket << -1 << -1;
+		}
 		
 		sf::Vector2f magicDir;
 		socket.receive(MagicPacket);
 		if (MagicPacket >> magicDir.x >> magicDir.y) {
-			if (connectionType == 's') {
-				sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
-				magicList.push_back(magicPos);
-				magicList.push_back(direction);
-			}
-			else {
-				sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
-				magicList.push_back(magicPos);
-				magicList.push_back(direction);
+			if (magicDir.x != -1 && magicDir.y != -1) {
+				if (connectionType == 's') {
+					sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
+					magicList.push_back(magicPos);
+					magicList.push_back(direction);
+				}
+				else {
+					sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
+					magicList.push_back(magicPos);
+					magicList.push_back(direction);
 
-			}			
-			numMagic++;
+				}
+				numMagic++;
+			}
+			
 		}
 		
 		for (int i = 0; i < loadCounter.x; i++) {
