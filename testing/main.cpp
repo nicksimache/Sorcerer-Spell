@@ -372,6 +372,7 @@ int main()
 
 
 			}
+			numMagic++;
 
 		}
 		else {
@@ -452,20 +453,22 @@ int main()
 			}
 		}
 
-		for (int i = 0; i < magicList.size(); i + 2) {
-			std::cout << "1";
-
+		for (int i = 0; i < magicList.size(); i += 2) {
 			sf::RectangleShape magic(sf::Vector2f(50.0, 50.0));
+
+			window.draw(magic);
+
 			magic.setPosition(magicList[i]);
-			std::cout << "2";
 
 			sf::Texture magicTexture;
 			magicTexture.loadFromFile("sprites/Floor.png");
 			magic.setTexture(&magicTexture);
-			std::cout << "3";
+
+			float length = sqrt(magicList[i + 1].x *magicList[i+1].x + magicList[i+1].y * magicList[i+1].y);
+			magicList[i + 1].x = magicList[i + 1].x / length;
+			magicList[i + 1].y = magicList[i + 1].y / length;
 
 			magic.move(magicList[i + 1]);
-			std::cout << "4";
 
 			if ((magic.getPosition().x >= player.getPosition().x - 50) && (magic.getPosition().x <= player.getPosition().x) && (magic.getPosition().y >= player.getPosition().y - 50) && (magic.getPosition().y <= player.getPosition().y)) {
 				std::cout << "player2 wins!";
@@ -473,11 +476,9 @@ int main()
 			else if ((magic.getPosition().x >= player2.getPosition().x - 50) && (magic.getPosition().x <= player2.getPosition().x) && (magic.getPosition().y >= player2.getPosition().y) - 50 && (magic.getPosition().y <= player2.getPosition().y)) {
 				std::cout << "player1 wins!";
 			}
-			std::cout << "5";
 
-			window.draw(magic);
+			magicList[i] = magic.getPosition();
 
-			std::cout << "6";
 
 		}
 
