@@ -347,6 +347,7 @@ int main()
 		bool magicSent = false;
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && ammo > 0)
 		{
+			std::cout << "rightclick magic" << std::endl;
 			magicSent = true;
 			ammo--;
 			//sf::Mouse::getPosition(window); need this so that a button press is relative to the window and not the screen
@@ -359,11 +360,16 @@ int main()
 				sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
 				magicList.push_back(magicPos);
 				magicList.push_back(direction);
+
+				std::cout << "added to list";
 			}
 			else {
 				sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
 				magicList.push_back(magicPos);
 				magicList.push_back(direction);
+
+				std::cout << "added to list";
+
 
 			}
 
@@ -404,15 +410,24 @@ int main()
 			}
 
 			if (magicDir.x != 0.0f || magicDir.y != 0.0f) {
+
+				std::cout << "magic recieved";
+
 				if (connectionType == 's') {
 					sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
 					magicList.push_back(magicPos);
 					magicList.push_back(direction);
+
+					std::cout << "added to list";
+
 				}
 				else {
 					sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
 					magicList.push_back(magicPos);
 					magicList.push_back(direction);
+
+					std::cout << "added to list";
+
 
 				}
 				numMagic++;
@@ -438,15 +453,19 @@ int main()
 		}
 
 		for (int i = 0; i < magicList.size(); i + 2) {
+			std::cout << "1";
 
 			sf::RectangleShape magic(sf::Vector2f(50.0, 50.0));
 			magic.setPosition(magicList[i]);
+			std::cout << "2";
 
 			sf::Texture magicTexture;
 			magicTexture.loadFromFile("sprites/Floor.png");
 			magic.setTexture(&magicTexture);
+			std::cout << "3";
 
 			magic.move(magicList[i + 1]);
+			std::cout << "4";
 
 			if ((magic.getPosition().x >= player.getPosition().x - 50) && (magic.getPosition().x <= player.getPosition().x) && (magic.getPosition().y >= player.getPosition().y - 50) && (magic.getPosition().y <= player.getPosition().y)) {
 				std::cout << "player2 wins!";
@@ -454,9 +473,11 @@ int main()
 			else if ((magic.getPosition().x >= player2.getPosition().x - 50) && (magic.getPosition().x <= player2.getPosition().x) && (magic.getPosition().y >= player2.getPosition().y) - 50 && (magic.getPosition().y <= player2.getPosition().y)) {
 				std::cout << "player1 wins!";
 			}
+			std::cout << "5";
 
 			window.draw(magic);
 
+			std::cout << "6";
 
 		}
 
@@ -518,7 +539,7 @@ int main()
 						{
 							isEnglishWord = false;
 							ammo += currentWordPoints;
-							std::cout << "eish";
+							std::cout << "     " << ammo << std::endl;
 						}
 
 						chosenWord = "";
