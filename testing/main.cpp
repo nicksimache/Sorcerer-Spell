@@ -590,10 +590,16 @@ int main()
 		}
 		std::vector<int>A;
 		int temp = ammo;
-		while (temp > 0) {
-			A.push_back(temp % 10);
-			temp /= 10;
+		if (ammo != 0) {
+			while (temp > 0) {
+				A.push_back(temp % 10);
+				temp /= 10;
+			}
 		}
+		else {
+			A.push_back(0);
+		}
+		
 		for (int i = A.size() - 1; i >= 0; i--) {
 			sf::RectangleShape letter(sf::Vector2f(32.0f, 32.0f));
 			sf::Texture letterText;
