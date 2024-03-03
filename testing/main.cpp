@@ -191,10 +191,6 @@ int main()
 		sf::Packet packet;
 
 
-		std::vector<sf::Vector2i>L;
-
-
-
 		deltaTime = clock.restart().asSeconds();
 
 		sf::Event evnt;
@@ -329,45 +325,33 @@ int main()
 			}
 		}
 
-		bool packetnotsent = false;
+		bool packetnotsent = true;
 		if (prevPosition != player.getPosition()) {
 			packet << player.getPosition().x << player.getPosition().y;
 			socketCounter++;
 			if (socketCounter == 3) {
 				socketCounter = 0;
-				socket.send(packet);
+				packetnotsent = false;
 			}
 			else {
 				packetnotsent = true;
 			}
 		}
 		if (packetnotsent) {
-			packet = sf::Packet();
-			packet << 0 << 0;
+			packet << 0.0f << 0.0f;
 		}
 
-
-		sf::Packet MagicPacket;
-		bool magic = false;
 		sf::Vector2f direction(0.0f, 0.0f);
 
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && ammo > 0)
 		{
-			magic = true;
 			ammo--;
 			//sf::Mouse::getPosition(window); need this so that a button press is relative to the window and not the screen
 			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 			direction.x = (float)(abs(mousePos.x - player.getPosition().x));
 			direction.y = (float)(abs(mousePos.y - player.getPosition().y));
 
-
-		}
-
-
-		if (magic) {
-			magic = false;
-			MagicPacket << direction.x << direction.y;
-			socket.send(MagicPacket);
+			packet << direction.x << direction.y;
 			if (connectionType == 's') {
 				sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
 				magicList.push_back(magicPos);
@@ -379,11 +363,10 @@ int main()
 				magicList.push_back(direction);
 
 			}
-			numMagic++;
+
 		}
 		else {
-			MagicPacket = sf::Packet();
-			MagicPacket << -1 << -1;
+			packet << 0.0f << 0.0f;
 		}
 
 
@@ -391,7 +374,7 @@ int main()
 
 		socket.receive(packet);
 		if (packet >> p2Position.x >> p2Position.y >> magicDir.x >> magicDir.y) {
-			if (p2Position.x != 0 && p2Position.y != 0) {
+			if (p2Position.x != 0.0f && p2Position.y != 0.0f) {
 				if (player2.getPosition().x < p2Position.x)
 				{
 					animation2.Update(0, deltaTime);
@@ -411,7 +394,7 @@ int main()
 				player2.setPosition(p2Position);
 			}
 
-			if (magicDir.x != -1 && magicDir.y != -1) {
+			if (magicDir.x != 0.0f && magicDir.y != 0.0f) {
 				if (connectionType == 's') {
 					sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
 					magicList.push_back(magicPos);
