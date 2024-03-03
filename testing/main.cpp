@@ -18,7 +18,7 @@
 
 static sf::Vector2f normalize(const sf::Vector2f& source)
 {
-	float length = 7 *sqrt((source.x * source.x) + (source.y * source.y));
+	float length = 0.15 * sqrt((source.x * source.x) + (source.y * source.y));
 	if (length != 0)
 		return sf::Vector2f(source.x / length, source.y / length);
 	else
@@ -422,9 +422,9 @@ int main()
 			if (magicDir.x != 0.0f || magicDir.y != 0.0f) {
 
 				std::cout << "magic recieved";
-
+				direction = magicDir;
 				if (connectionType == 's') {
-					sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
+					sf::Vector2f magicPos(player2.getPosition().x - 50.0f, player2.getPosition().y);
 					magicList.push_back(magicPos);
 					magicList.push_back(direction);
 
@@ -432,7 +432,7 @@ int main()
 
 				}
 				else {
-					sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
+					sf::Vector2f magicPos(player2.getPosition().x + 50.0f, player2.getPosition().y);
 					magicList.push_back(magicPos);
 					magicList.push_back(direction);
 
