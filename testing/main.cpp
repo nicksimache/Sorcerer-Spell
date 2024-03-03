@@ -523,6 +523,8 @@ int main()
 							isEnglishWord = false;
 							ammo += currentWordPoints;
 							std::cout << "     " << ammo << std::endl;
+
+							B = Board(7, 7);
 						}
 
 						chosenWord = "";
@@ -604,12 +606,12 @@ int main()
 			sf::RectangleShape letter(sf::Vector2f(32.0f, 32.0f));
 			sf::Texture letterText;
 
-			std::string file = "numbers/";
+			std::string file = "sprites/numbers/";
 			file += A[i];
 			file += ".png";
 			letterText.loadFromFile(file);
 			letter.setTexture(&letterText);
-			letter.setPosition(sf::Vector2f((float)i * 42 - 10, 0.0f));
+			letter.setPosition(sf::Vector2f((float)i * 42, 0.0f));
 			window.draw(letter);
 		}
 
