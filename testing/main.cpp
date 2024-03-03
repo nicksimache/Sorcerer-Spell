@@ -54,7 +54,7 @@ int main()
 	}
 	else
 	{
-		std::cin >> ip;
+		//std::cin >> ip;
 		socket.connect(ip, 55001);
 
 	}
@@ -327,11 +327,12 @@ int main()
 
 		bool packetnotsent = true;
 		if (prevPosition != player.getPosition()) {
-			packet << player.getPosition().x << player.getPosition().y;
 			socketCounter++;
 			if (socketCounter == 3) {
 				socketCounter = 0;
 				packetnotsent = false;
+				packet << player.getPosition().x << player.getPosition().y;
+
 			}
 			else {
 				packetnotsent = true;
@@ -374,7 +375,10 @@ int main()
 
 		socket.receive(packet);
 		if (packet >> p2Position.x >> p2Position.y >> magicDir.x >> magicDir.y) {
-			if (p2Position.x != 0.0f && p2Position.y != 0.0f) {
+
+			std::cout << p2Position.x << " " << p2Position.y << std::endl;
+
+			if (p2Position.x != 0.0f || p2Position.y != 0.0f) {
 				if (player2.getPosition().x < p2Position.x)
 				{
 					animation2.Update(0, deltaTime);
@@ -394,7 +398,7 @@ int main()
 				player2.setPosition(p2Position);
 			}
 
-			if (magicDir.x != 0.0f && magicDir.y != 0.0f) {
+			if (magicDir.x != 0.0f || magicDir.y != 0.0f) {
 				if (connectionType == 's') {
 					sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
 					magicList.push_back(magicPos);
@@ -410,7 +414,7 @@ int main()
 			}
 
 		}
-		
+
 		for (int i = 0; i < loadCounter.x; i++) {
 			for (int j = 0; j < loadCounter.y; j++) {
 				if (map[i][j] == 1)
@@ -428,7 +432,7 @@ int main()
 			}
 		}
 
-		for (int i = 0; i < magicList.size(); i+2) {
+		for (int i = 0; i < magicList.size(); i + 2) {
 
 			sf::RectangleShape magic(sf::Vector2f(50.0, 50.0));
 			magic.setPosition(magicList[i]);
@@ -437,7 +441,7 @@ int main()
 			magicTexture.loadFromFile("sprites/Floor.png");
 			magic.setTexture(&magicTexture);
 
-			magic.move(magicList[i+1]);
+			magic.move(magicList[i + 1]);
 
 			if ((magic.getPosition().x >= player.getPosition().x - 50) && (magic.getPosition().x <= player.getPosition().x) && (magic.getPosition().y >= player.getPosition().y - 50) && (magic.getPosition().y <= player.getPosition().y)) {
 				std::cout << "player2 wins!";
@@ -447,7 +451,7 @@ int main()
 			}
 
 			window.draw(magic);
-			
+
 
 		}
 
