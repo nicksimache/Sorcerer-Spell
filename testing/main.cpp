@@ -462,7 +462,7 @@ int main()
 			}
 		}
 
-		
+
 
 		for (int i = 0; i < B.xDim; i++)
 		{
@@ -601,13 +601,13 @@ int main()
 		else {
 			A.push_back(0);
 		}
-		
+
 		for (int i = A.size() - 1; i >= 0; i--) {
 			sf::RectangleShape letter(sf::Vector2f(32.0f, 32.0f));
 			sf::Texture letterText;
 
 			std::string file = "sprites/numbers/";
-			file += A[i];
+			file += std::to_string(A[i]);
 			file += ".png";
 			letterText.loadFromFile(file);
 			letter.setTexture(&letterText);
