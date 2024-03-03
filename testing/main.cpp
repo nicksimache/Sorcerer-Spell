@@ -346,36 +346,11 @@ int main()
 			packet << 0 << 0;
 		}
 
-		socket.receive(packet);
-		if (packet >> p2Position.x >> p2Position.y) {
-			if (p2Position.x != 0 && p2Position.y != 0) {
-				if (player2.getPosition().x < p2Position.x)
-				{
-					animation2.Update(0, deltaTime);
-				}
-				else if (player2.getPosition().x > p2Position.x)
-				{
-					animation2.Update(1, deltaTime);
-				}
-				else if (animation2.getCurrentImage().y == 0)
-				{
-					animation2.Update(0, deltaTime);
-				}
-				else if (animation2.getCurrentImage().y == 1)
-				{
-					animation2.Update(1, deltaTime);
-				}
-				player2.setPosition(p2Position);
-			}
-			
-		}
 
-
-		
 		sf::Packet MagicPacket;
 		bool magic = false;
 		sf::Vector2f direction(0.0f, 0.0f);
-		
+
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && ammo > 0)
 		{
 			magic = true;
@@ -384,10 +359,10 @@ int main()
 			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 			direction.x = (float)(abs(mousePos.x - player.getPosition().x));
 			direction.y = (float)(abs(mousePos.y - player.getPosition().y));
-			
-			
+
+
 		}
-		
+
 
 		if (magic) {
 			magic = false;
@@ -410,10 +385,32 @@ int main()
 			MagicPacket = sf::Packet();
 			MagicPacket << -1 << -1;
 		}
-		
+
+
 		sf::Vector2f magicDir;
-		socket.receive(MagicPacket);
-		if (MagicPacket >> magicDir.x >> magicDir.y) {
+
+		socket.receive(packet);
+		if (packet >> p2Position.x >> p2Position.y >> magicDir.x >> magicDir.y) {
+			if (p2Position.x != 0 && p2Position.y != 0) {
+				if (player2.getPosition().x < p2Position.x)
+				{
+					animation2.Update(0, deltaTime);
+				}
+				else if (player2.getPosition().x > p2Position.x)
+				{
+					animation2.Update(1, deltaTime);
+				}
+				else if (animation2.getCurrentImage().y == 0)
+				{
+					animation2.Update(0, deltaTime);
+				}
+				else if (animation2.getCurrentImage().y == 1)
+				{
+					animation2.Update(1, deltaTime);
+				}
+				player2.setPosition(p2Position);
+			}
+
 			if (magicDir.x != -1 && magicDir.y != -1) {
 				if (connectionType == 's') {
 					sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
@@ -428,7 +425,7 @@ int main()
 				}
 				numMagic++;
 			}
-			
+
 		}
 		
 		for (int i = 0; i < loadCounter.x; i++) {
