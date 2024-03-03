@@ -464,9 +464,7 @@ int main()
 			magicTexture.loadFromFile("sprites/Floor.png");
 			magic.setTexture(&magicTexture);
 
-			float length = sqrt(magicList[i + 1].x *magicList[i+1].x + magicList[i+1].y * magicList[i+1].y);
-			magicList[i + 1].x = magicList[i + 1].x / length;
-			magicList[i + 1].y = magicList[i + 1].y / length;
+			magicList[i + 1] = normalize(magicList[i + 1]);
 
 			magic.move(magicList[i + 1]);
 
@@ -593,4 +591,13 @@ int main()
 	}
 
 	system("pause");
+}
+
+static sf::Vector2f normalize(const sf::Vector2f& source)
+{
+	float length = sqrt((source.x * source.x) + (source.y * source.y));
+	if (length != 0)
+		return sf::Vector2f(source.x / length, source.y / length);
+	else
+		return source;
 }
