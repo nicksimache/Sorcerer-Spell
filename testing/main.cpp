@@ -187,6 +187,9 @@ int main()
 	float deltaTime = 0.0f;
 	sf::Clock clock;
 
+	sf::Clock BulletClock;
+	BulletClock.restart();
+
 	sf::Vector2f prevPosition, p2Position; //positions of the dudes
 
 	socket.setBlocking(false);
@@ -354,39 +357,46 @@ int main()
 		sf::Vector2f direction(0.0f, 0.0f);
 
 		bool magicSent = false;
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && ammo > 0)
-		{
-			std::cout << "rightclick magic" << std::endl;
-			magicSent = true;
-			ammo--;
-			//sf::Mouse::getPosition(window); need this so that a button press is relative to the window and not the screen
-			sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-			direction.x = (float)((mousePos.x - player.getPosition().x));
-			direction.y = (float)((mousePos.y - player.getPosition().y));
 
-			packet << direction.x << direction.y;
-			if (connectionType == 's') {
-				sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
-				magicList.push_back(magicPos);
-				magicList.push_back(direction);
+		if (BulletClock.getElapsedTime() > sf::seconds(1.0f)) {
+			BulletClock.restart();
 
-				std::cout << "added to list";
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && ammo > 0)
+			{
+				std::cout << "rightclick magic" << std::endl;
+				magicSent = true;
+				ammo--;
+				//sf::Mouse::getPosition(window); need this so that a button press is relative to the window and not the screen
+				sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+				direction.x = (float)((mousePos.x - player.getPosition().x));
+				direction.y = (float)((mousePos.y - player.getPosition().y));
+
+				packet << direction.x << direction.y;
+				if (connectionType == 's') {
+					sf::Vector2f magicPos(player.getPosition().x + 50.0f, player.getPosition().y);
+					magicList.push_back(magicPos);
+					magicList.push_back(direction);
+
+					std::cout << "added to list";
+				}
+				else {
+					sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
+					magicList.push_back(magicPos);
+					magicList.push_back(direction);
+
+					std::cout << "added to list";
+
+
+				}
+				numMagic++;
+
 			}
 			else {
-				sf::Vector2f magicPos(player.getPosition().x - 50.0f, player.getPosition().y);
-				magicList.push_back(magicPos);
-				magicList.push_back(direction);
-
-				std::cout << "added to list";
-
-
+				packet << 0.0f << 0.0f;
 			}
-			numMagic++;
 
 		}
-		else {
-			packet << 0.0f << 0.0f;
-		}
+		
 		if (magicSent || posSent) {
 			socket.send(packet);
 		}
